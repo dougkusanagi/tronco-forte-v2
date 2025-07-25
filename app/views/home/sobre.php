@@ -1,3 +1,20 @@
+<!-- Hero Section with Video Background -->
+<section class="relative h-screen overflow-hidden">
+    <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
+        <source src="https://cdn.pixabay.com/video/2023/12/10/192778-893446884_large.mp4" type="video/mp4">
+        Seu navegador não suporta vídeo.
+    </video>
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="relative z-10 flex flex-col items-center justify-center h-full text-white text-center px-4">
+        <h1 class="text-4xl lg:text-6xl font-display font-bold leading-tight mb-4">
+            Sobre a Tronco Forte
+        </h1>
+        <p class="text-xl lg:text-2xl text-gray-200 leading-relaxed max-w-3xl">
+            15 anos de experiência fornecendo madeira 100% legalizada para construção civil e marcenaria. Sustentabilidade e qualidade em cada projeto.
+        </p>
+    </div>
+</section>
+
 <div class="bg-gray-50 py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->

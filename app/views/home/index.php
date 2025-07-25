@@ -1,6 +1,6 @@
 <!-- Hero Section -->
-<section class="relative bg-gradient-to-br from-wood-brown to-wood-dark text-white overflow-hidden">
-    <div class="absolute inset-0 bg-black opacity-20"></div>
+<section class="relative bg-cover bg-center text-white overflow-hidden" style="background-image: url('<?= $hero['image'] ?>');">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div class="space-y-8">
@@ -20,7 +20,6 @@
                 </div>
             </div>
             <div class="relative">
-                <img src="<?= $hero['image'] ?>" alt="Madeiras Tronco Forte" class="rounded-2xl shadow-2xl">
                 <div class="absolute -bottom-6 -right-6 bg-forest-green text-white p-6 rounded-xl shadow-lg">
                     <div class="flex items-center space-x-3">
                         <i data-lucide="shield-check" class="w-8 h-8"></i>
@@ -41,7 +40,7 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
             <?php foreach ($stats as $key => $stat): ?>
             <div class="text-center">
-                <div class="text-4xl lg:text-5xl font-bold text-wood-brown mb-2"><?= $stat ?></div>
+                <div class="text-4xl lg:text-5xl font-bold text-wood-brown mb-2" data-counter="<?= $stat ?>">0</div>
                 <div class="text-gray-600 font-medium"><?= ucfirst(str_replace('_', ' ', $key)) ?></div>
             </div>
             <?php endforeach; ?>
@@ -50,7 +49,7 @@
 </section>
 
 <!-- Produtos em Destaque -->
-<section class="py-20 bg-gray-50">
+<section class="py-20 bg-gray-50 animate-on-scroll">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
             <h2 class="text-4xl font-display font-bold text-gray-900 mb-4">Produtos em Destaque</h2>
@@ -89,7 +88,7 @@
 </section>
 
 <!-- Calculadora de Volume -->
-<section id="calculadora" class="py-20 bg-wood-brown text-white">
+<section id="calculadora" class="py-20 bg-wood-brown text-white animate-on-scroll">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="text-4xl font-display font-bold mb-4">Calculadora de Volume</h2>
@@ -157,7 +156,7 @@
 </section>
 
 <!-- Quiz de Madeiras -->
-<section id="quiz" class="py-20 bg-gray-50">
+<section id="quiz" class="py-20 bg-gray-50 animate-on-scroll">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="text-4xl font-display font-bold text-gray-900 mb-4">Quiz: Qual Madeira é Ideal?</h2>
@@ -212,7 +211,7 @@
 </section>
 
 <!-- Mapa de Origem -->
-<section class="py-20 bg-white">
+<section class="py-20 bg-white animate-on-scroll">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
             <h2 class="text-4xl font-display font-bold text-gray-900 mb-4">Rastreabilidade e Origem</h2>
@@ -265,7 +264,50 @@
 </section>
 
 <!-- Timeline Sustentável -->
-<section class="py-20 bg-forest-green text-white">
+<section class="py-20 bg-forest-green text-white animate-on-scroll">
+<script>
+    // Counter animation
+    document.addEventListener('DOMContentLoaded', () => {
+        const counters = document.querySelectorAll('[data-counter]');
+        const options = { threshold: 0.5 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.getAttribute('data-counter'));
+                    let count = 0;
+                    const increment = target / 100;
+                    const update = () => {
+                        count += increment;
+                        if (count < target) {
+                            entry.target.textContent = Math.floor(count);
+                            requestAnimationFrame(update);
+                        } else {
+                            entry.target.textContent = target;
+                        }
+                    };
+                    update();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, options);
+        counters.forEach(counter => observer.observe(counter));
+
+        // Scroll animations
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+        const animateObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, { threshold: 0.1 });
+        animateElements.forEach(el => {
+            el.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-500');
+            animateObserver.observe(el);
+        });
+    });
+</script>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
             <h2 class="text-4xl font-display font-bold mb-4">Nossa Jornada Sustentável</h2>

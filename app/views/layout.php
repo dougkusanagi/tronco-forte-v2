@@ -83,7 +83,7 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
-                    <a href="/" class="flex items-center space-x-2">
+                    <a href="<?= $base_path ?: '/' ?>" class="flex items-center space-x-2">
                         <div class="w-10 h-10 bg-wood-brown rounded-lg flex items-center justify-center">
                             <i data-lucide="tree-pine" class="w-6 h-6 text-white"></i>
                         </div>
@@ -93,11 +93,12 @@
                 
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex space-x-8">
-                    <a href="/" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Início</a>
-                    <a href="/catalogo" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Catálogo</a>
-                    <a href="/blog" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Blog</a>
-                    <a href="/fornecedores" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Fornecedores</a>
-                    <a href="#contato" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Contato</a>
+                    <a href="<?= $base_path ?: '/' ?>" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Início</a>
+                    <a href="<?= $base_path ?>/catalogo" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Catálogo</a>
+                    <a href="<?= $base_path ?>/blog" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Blog</a>
+                    <a href="<?= $base_path ?>/fornecedores" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Fornecedores</a>
+                    <a href="<?= $base_path ?>/sobre" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Sobre</a>
+                    <a href="<?= $base_path ?>/contato" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Contato</a>
                 </nav>
                 
                 <!-- CTA Button -->
@@ -123,7 +124,8 @@
                 <a href="/catalogo" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Catálogo</a>
                 <a href="/blog" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Blog</a>
                 <a href="/fornecedores" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Fornecedores</a>
-                <a href="#contato" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Contato</a>
+                <a href="/sobre" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Sobre</a>
+                <a href="/contato" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Contato</a>
                 <a href="#orcamento" class="block mx-3 my-2 px-4 py-2 bg-wood-brown text-white rounded-lg text-center font-medium">Solicitar Orçamento</a>
             </div>
         </div>

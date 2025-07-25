@@ -1,3 +1,16 @@
+<!-- Hero Section -->
+<section class="relative bg-cover bg-center text-white overflow-hidden" style="background-image: url('https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20contact%20us%20background%20wood%20industry%20office%20team&image_size=landscape_16_9');">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 text-center">
+        <h1 class="text-4xl lg:text-6xl font-display font-bold leading-tight">
+            Entre em Contato
+        </h1>
+        <p class="text-xl lg:text-2xl text-gray-200 leading-relaxed mt-4">
+            Fale com nossos especialistas e descubra a madeira ideal para seu projeto.
+        </p>
+    </div>
+</section>
+
 <div class="bg-gray-50 py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\utils\UrlHelper;
 use Flight;
 use Exception;
 use flight\Engine;
@@ -34,6 +35,8 @@ class AdminController
         // Set the content for the admin layout
         $content = $this->app->view()->fetch('admin/dashboard', $data);
         $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
         
         // Render with admin layout
         $this->app->render('admin_layout', $data);
@@ -55,6 +58,8 @@ class AdminController
         // Set the content for the admin layout
         $content = $this->app->view()->fetch('admin/fornecedores', $data);
         $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
         
         // Render with admin layout
         $this->app->render('admin_layout', $data);
@@ -76,6 +81,8 @@ class AdminController
         // Set the content for the admin layout
         $content = $this->app->view()->fetch('admin/blog', $data);
         $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
         
         // Render with admin layout
         $this->app->render('admin_layout', $data);
@@ -101,6 +108,8 @@ class AdminController
             // Set the content for the admin layout
             $content = $this->app->view()->fetch('admin/produtos', $data);
             $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
             
             // Render with admin layout
             $this->app->render('admin_layout', $data);
@@ -128,6 +137,8 @@ class AdminController
         // Set the content for the admin layout
         $content = $this->app->view()->fetch('admin/relatorios', $data);
         $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
         
         // Render with admin layout
         $this->app->render('admin_layout', $data);
@@ -149,6 +160,8 @@ class AdminController
         // Set the content for the admin layout
         $content = $this->app->view()->fetch('admin/configuracoes', $data);
         $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
         
         // Render with admin layout
         $this->app->render('admin_layout', $data);
@@ -808,6 +821,8 @@ class AdminController
             
             $content = $this->app->view()->fetch('admin/blog-form', $data);
             $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
             $this->app->render('admin_layout', $data);
         } catch (Exception $e) {
             error_log('Erro ao carregar artigo para edição: ' . $e->getMessage());
@@ -832,6 +847,8 @@ class AdminController
         
         $content = $this->app->view()->fetch('admin/blog-form', $data);
         $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
         $this->app->render('admin_layout', $data);
     }
     
