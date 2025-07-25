@@ -1,0 +1,76 @@
+-- Seeder: Fornecedores data
+-- Created: 2024-01-01
+-- Description: Dados iniciais de fornecedores parceiros
+
+INSERT OR REPLACE INTO fornecedores (
+    nome, slug, descricao, email, telefone, whatsapp, website, 
+    cidade, estado, regiao, especialidades, certificacoes, 
+    imagem, banner, avaliacao, total_avaliacoes, 
+    links, redes_sociais, is_ativo, is_verificado
+) VALUES
+(
+    'Madeiras do Norte',
+    'madeiras-do-norte',
+    'Especializada em madeiras amazônicas certificadas, oferecemos produtos de alta qualidade com responsabilidade ambiental.',
+    'contato@madeirasnorte.com.br',
+    '(11) 3456-7890',
+    '(11) 99876-5432',
+    'https://madeirasnorte.com.br',
+    'Manaus',
+    'AM',
+    'norte',
+    '["Madeira Certificada", "Tábuas", "Vigas", "Deck"]',
+    '["FSC", "CERFLOR"]',
+    'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20lumber%20warehouse%20amazon%20wood%20sustainable%20forestry&image_size=landscape_4_3',
+    'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=amazon%20rainforest%20sustainable%20logging%20certified%20wood%20banner&image_size=landscape_16_9',
+    4.8,
+    127,
+    '[{"tipo": "catalogo", "titulo": "Catálogo", "url": "https://madeirasnorte.com.br/catalogo", "icone": "book-open"}, {"tipo": "orcamento", "titulo": "Orçamento", "url": "https://madeirasnorte.com.br/orcamento", "icone": "calculator"}]',
+    '[{"tipo": "instagram", "url": "https://instagram.com/madeirasnorte"}, {"tipo": "facebook", "url": "https://facebook.com/madeirasnorte"}]',
+    1,
+    1
+),
+(
+    'Pinus Sul Reflorestamento',
+    'pinus-sul-reflorestamento',
+    'Líder em reflorestamento de pinus no Sul do Brasil, fornecendo madeira de qualidade para construção civil e móveis.',
+    'vendas@pinussul.com.br',
+    '(47) 3234-5678',
+    '(47) 99123-4567',
+    'https://pinussul.com.br',
+    'Curitiba',
+    'PR',
+    'sul',
+    '["Pinus", "Reflorestamento", "Construção Civil", "Móveis"]',
+    '["CERFLOR", "PEFC"]',
+    'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=pine%20forest%20plantation%20sustainable%20lumber%20mill%20southern%20brazil&image_size=landscape_4_3',
+    'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=pine%20tree%20plantation%20reforestation%20sustainable%20banner&image_size=landscape_16_9',
+    4.6,
+    89,
+    '[{"tipo": "catalogo", "titulo": "Produtos", "url": "https://pinussul.com.br/produtos", "icone": "package"}, {"tipo": "contato", "titulo": "Contato", "url": "https://pinussul.com.br/contato", "icone": "phone"}]',
+    '[{"tipo": "linkedin", "url": "https://linkedin.com/company/pinussul"}, {"tipo": "youtube", "url": "https://youtube.com/pinussul"}]',
+    1,
+    1
+),
+(
+    'Eucalipto Forte Sudeste',
+    'eucalipto-forte-sudeste',
+    'Fornecedor especializado em eucalipto para diversos segmentos industriais, com foco em qualidade e sustentabilidade.',
+    'comercial@eucaliptoforte.com.br',
+    '(19) 3567-8901',
+    '(19) 99234-5678',
+    'https://eucaliptoforte.com.br',
+    'Campinas',
+    'SP',
+    'sudeste',
+    '["Eucalipto", "Celulose", "Carvão Vegetal", "Biomassa"]',
+    '["FSC", "ISO 14001"]',
+    'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=eucalyptus%20plantation%20industrial%20forestry%20sustainable%20southeast%20brazil&image_size=landscape_4_3',
+    'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=eucalyptus%20trees%20industrial%20forestry%20banner%20sustainable&image_size=landscape_16_9',
+    4.7,
+    156,
+    '[{"tipo": "especificacoes", "titulo": "Especificações", "url": "https://eucaliptoforte.com.br/specs", "icone": "file-text"}, {"tipo": "logistica", "titulo": "Logística", "url": "https://eucaliptoforte.com.br/logistica", "icone": "truck"}]',
+    '[{"tipo": "instagram", "url": "https://instagram.com/eucaliptoforte"}, {"tipo": "facebook", "url": "https://facebook.com/eucaliptoforte"}]',
+    1,
+    1
+);
