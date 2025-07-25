@@ -83,7 +83,7 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
-                    <a href="<?= $base_path ?: '/' ?>" class="flex items-center space-x-2">
+                    <a href="<?= $base_path ?? '/' ?>" class="flex items-center space-x-2">
                         <div class="w-10 h-10 bg-wood-brown rounded-lg flex items-center justify-center">
                             <i data-lucide="tree-pine" class="w-6 h-6 text-white"></i>
                         </div>
@@ -120,12 +120,12 @@
         <!-- Mobile Navigation -->
         <div x-show="mobileMenuOpen" x-transition class="md:hidden bg-white border-t">
             <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="/" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Início</a>
-                <a href="/catalogo" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Catálogo</a>
-                <a href="/blog" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Blog</a>
-                <a href="/fornecedores" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Fornecedores</a>
-                <a href="/sobre" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Sobre</a>
-                <a href="/contato" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Contato</a>
+                <a href="<?= $base_path ?? '/' ?>" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Início</a>
+                <a href="<?= $base_path ?>/catalogo" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Catálogo</a>
+                <a href="<?= $base_path ?>/blog" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Blog</a>
+                <a href="<?= $base_path ?>/fornecedores" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Fornecedores</a>
+                <a href="<?= $base_path ?>/sobre" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Sobre</a>
+                <a href="<?= $base_path ?>/contato" class="block px-3 py-2 text-gray-700 hover:text-wood-brown font-medium">Contato</a>
                 <a href="#orcamento" class="block mx-3 my-2 px-4 py-2 bg-wood-brown text-white rounded-lg text-center font-medium">Solicitar Orçamento</a>
             </div>
         </div>

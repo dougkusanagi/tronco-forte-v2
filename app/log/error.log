@@ -1,0 +1,6 @@
+[2025-07-25 11-15-38] PHP Warning: Undefined array key "file_path" in /home/silver/sites/tronco-forte-v2/app/database/Database.php:22  @  CLI (PID: 280657): migrate.php migrate 
+[2025-07-25 11-23-08] PHP Warning: Undefined array key "file_path" in /home/silver/sites/tronco-forte-v2/app/database/Database.php:22  @  CLI (PID: 286968): runway migrate migrate 
+[2025-07-25 11-23-22] PHP Warning: Undefined array key "file_path" in /home/silver/sites/tronco-forte-v2/app/database/Database.php:22  @  CLI (PID: 287681): runway migrate migrate 
+[2025-07-25 11-23-36] PHP Warning: Undefined array key "file_path" in /home/silver/sites/tronco-forte-v2/app/database/Database.php:22  @  CLI (PID: 288421): runway migrate migrate -v 
+[2025-07-25 11-33-44] PHP Warning: Undefined array key "user" in /home/silver/sites/tronco-forte-v2/app/database/Database.php:24  @  CLI (PID: 306524): runway migrate fresh 
+[2025-07-25 11-33-44] PHP Warning: Undefined array key "password" in /home/silver/sites/tronco-forte-v2/app/database/Database.php:24  @  CLI (PID: 306524): runway migrate fresh 
