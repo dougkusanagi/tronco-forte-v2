@@ -4,11 +4,12 @@ namespace app\controllers;
 
 use flight\Engine;
 use app\models\Fornecedor;
+use app\utils\UrlHelper;
 
 class FornecedorController
 {
     private Engine $app;
-    private $fornecedorModel;
+    private Fornecedor $fornecedorModel;
 
     public function __construct(Engine $app)
     {
@@ -45,6 +46,8 @@ class FornecedorController
         // Set the content for the layout
         $content = $this->app->view()->fetch('fornecedor/index', $data);
         $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
         
         // Render with layout
         $this->app->render('layout', $data);
@@ -73,6 +76,8 @@ class FornecedorController
         // Set the content for the layout
         $content = $this->app->view()->fetch('fornecedor/perfil', $data);
         $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
         
         // Render with layout
         $this->app->render('layout', $data);

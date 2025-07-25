@@ -93,7 +93,7 @@
                 
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex space-x-8">
-                    <a href="<?= $base_path ?: '/' ?>" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Início</a>
+                    <a href="<?= $base_path ?? '/' ?>" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Início</a>
                     <a href="<?= $base_path ?>/catalogo" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Catálogo</a>
                     <a href="<?= $base_path ?>/blog" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Blog</a>
                     <a href="<?= $base_path ?>/fornecedores" class="text-gray-700 hover:text-wood-brown px-3 py-2 text-sm font-medium transition-colors">Fornecedores</a>

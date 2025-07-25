@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\utils\UrlHelper;
 use flight\Engine;
 
 class CatalogoController
@@ -37,6 +38,8 @@ class CatalogoController
         // Set the content for the layout
         $content = $this->app->view()->fetch('catalogo/index', $data);
         $data['content'] = $content;
+        $data['base_path'] = UrlHelper::getBasePath();
+        $data['url_helper'] = UrlHelper::class;
         
         // Render with layout
         $this->app->render('layout', $data);

@@ -114,6 +114,44 @@ class Fornecedor extends Model
         }
     }
     
+    public function buscar(string $regiao = 'todas', string $especialidade = 'todas', string $termo = ''): array
+    {
+        try {
+            $conditions = ['ativo = 1'];
+            $params = [];
+            
+            if ($regiao !== 'todas' && !empty($regiao)) {
+                $conditions[] = 'regiao = ?';
+                $params[] = $regiao;
+            }
+            
+            if ($especialidade !== 'todas' && !empty($especialidade)) {
+                $conditions[] = 'especialidades LIKE ?';
+                $params[] = '%' . $especialidade . '%';
+            }
+            
+            if (!empty($termo)) {
+                $conditions[] = '(nome LIKE ? OR descricao LIKE ? OR especialidades LIKE ? OR cidade LIKE ?)';
+                $searchTerm = '%' . $termo . '%';
+                $params[] = $searchTerm;
+                $params[] = $searchTerm;
+                $params[] = $searchTerm;
+                $params[] = $searchTerm;
+            }
+            
+            $sql = "SELECT * FROM {$this->table} WHERE " . implode(' AND ', $conditions) . " ORDER BY verificado DESC, avaliacao DESC";
+            
+            $fornecedores = $this->db->fetchAll($sql, $params);
+            
+            // Process each fornecedor
+            return array_map(function($fornecedor) {
+                return $this->processarDados($fornecedor);
+            }, $fornecedores);
+        } catch (\PDOException $e) {
+            throw new \Exception("Database error: " . $e->getMessage());
+        }
+    }
+    
     public function filtrar(array $filtros): array
     {
         try {
