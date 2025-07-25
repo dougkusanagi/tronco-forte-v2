@@ -16,7 +16,11 @@ class Database
         
         try {
             // Use MySQL configuration
-            $dsn = "mysql:host={$config['database']['host']};dbname={$config['database']['dbname']};charset=utf8mb4";
+            // $dsn = "mysql:host={$config['database']['host']};dbname={$config['database']['dbname']};charset=utf8mb4";
+        
+            // SQLite DSN configuration (commented out)
+            $dsn = 'sqlite:' . $config['database']['file_path'];
+        
             $this->pdo = new PDO($dsn, $config['database']['user'], $config['database']['password']);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
