@@ -52,10 +52,14 @@ function freshDatabase() {
         $dbName = $config['database']['dbname'];
         
         // Connect to MySQL server (without specifying database)
-        $dsn = "mysql:host={$config['database']['host']};charset=utf8mb4";
+        // $dsn = "mysql:host={$config['database']['host']};charset=utf8mb4";
+        
+        // SQLite DSN configuration (commented out)
+        $dsn = 'sqlite:' . $config['database']['file_path'];
+
         $pdo = new PDO($dsn, $config['database']['user'], $config['database']['password']);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
+
         // Check if database exists
         $stmt = $pdo->prepare("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?");
         $stmt->execute([$dbName]);
