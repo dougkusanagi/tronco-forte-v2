@@ -1,4 +1,5 @@
 vendor/
+node_modules/
 .vscode/
 app/config/config.php
 composer.lock
