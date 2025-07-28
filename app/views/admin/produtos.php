@@ -11,7 +11,7 @@ document.addEventListener('alpine:init', () => {
             preco: '',
             descricao: '',
             especificacoes: '',
-            disponibilidade: 'disponivel'
+            disponibilidade: 'in_stock'
         },
         busca: '',
         categoria: '',
@@ -40,7 +40,15 @@ document.addEventListener('alpine:init', () => {
         },
         
         editarProduto(produto) {
-            this.produtoSelecionado = { ...produto };
+            this.produtoSelecionado = {
+                id: produto.id,
+                nome: produto.name,
+                categoria: produto.category,
+                preco: produto.price_per_m3,
+                descricao: produto.description,
+                especificacoes: produto.full_description,
+                disponibilidade: produto.availability
+            };
             this.modalEditarProduto = true;
         },
         
@@ -201,6 +209,9 @@ document.addEventListener('alpine:init', () => {
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
+                                        <a x-bind:href="'/catalogo/produto/' + produto.slug" class="text-blue-600 hover:text-blue-900" title="Ver">
+                                            <i data-lucide="eye" class="w-4 h-4"></i>
+                                        </a>
                                         <button @click="editarProduto(produto)" 
                                                 class="text-wood-brown hover:text-wood-dark" title="Editar">
                                             <i data-lucide="edit" class="w-4 h-4"></i>
@@ -265,9 +276,9 @@ document.addEventListener('alpine:init', () => {
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Disponibilidade</label>
                                 <select x-model="novoProduto.disponibilidade" 
                                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
-                                    <option value="disponivel">Disponível</option>
-                                    <option value="sob-consulta">Sob Consulta</option>
-                                    <option value="esgotado">Esgotado</option>
+                                    <option value="in_stock">Disponível</option>
+                                    <option value="on_demand">Sob Consulta</option>
+                                    <option value="out_of_stock">Esgotado</option>
                                 </select>
                             </div>
                         </div>
@@ -295,6 +306,7 @@ document.addEventListener('alpine:init', () => {
                             </button>
                         </div>
                     </form>
+                    </template>
                 </div>
             </div>
 
@@ -308,6 +320,7 @@ document.addEventListener('alpine:init', () => {
                         </button>
                     </div>
                     
+                    <template x-if="produtoSelecionado">
                     <form @submit.prevent="atualizarProduto()" class="space-y-4">
                         <input type="hidden" x-model="produtoSelecionado.id">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -338,9 +351,9 @@ document.addEventListener('alpine:init', () => {
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Disponibilidade</label>
                                 <select x-model="produtoSelecionado.disponibilidade" 
                                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
-                                    <option value="disponivel">Disponível</option>
-                                    <option value="sob-consulta">Sob Consulta</option>
-                                    <option value="esgotado">Esgotado</option>
+                                    <option value="in_stock">Disponível</option>
+                                    <option value="on_demand">Sob Consulta</option>
+                                    <option value="out_of_stock">Esgotado</option>
                                 </select>
                             </div>
                         </div>
