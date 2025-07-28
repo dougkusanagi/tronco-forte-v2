@@ -193,23 +193,132 @@
                     </form>
                 </div>
             </div>
+            <!-- Modal Editar Produto -->
+            <div x-show="modalEditarProduto" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" x-cloak>
+                <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">Editar Produto</h3>
+                        <button @click="modalEditarProduto = false" class="text-gray-400 hover:text-gray-600">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                    
+                    <form @submit.prevent="atualizarProduto()" class="space-y-4">
+                        <input type="hidden" x-model="produtoSelecionado.id">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label>
+                                <input type="text" x-model="produtoSelecionado.nome" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                                <select x-model="produtoSelecionado.categoria" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                                    <option value="">Selecione uma categoria</option>
+                                    <?php foreach ($categorias as $cat): ?>
+                                    <option value="<?= strtolower(str_replace(' ', '-', $cat)) ?>"><?= $cat ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Preço por m³ (R$)</label>
+                                <input type="number" x-model="novoProduto.preco" step="0.01" required 
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Disponibilidade</label>
+                                <select x-model="novoProduto.disponibilidade" 
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                                    <option value="disponivel">Disponível</option>
+                                    <option value="sob-consulta">Sob Consulta</option>
+                                    <option value="esgotado">Esgotado</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                            <textarea x-model="novoProduto.descricao" rows="3" 
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Especificações Técnicas</label>
+                            <textarea x-model="novoProduto.especificacoes" rows="4" 
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent"></textarea>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3 pt-4">
+                            <button type="button" @click="modalEditarProduto = false" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</button>
+                            <button type="submit" class="px-4 py-2 bg-wood-brown text-white rounded-lg hover:bg-wood-dark transition-colors">Atualizar Produto</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-function salvarProduto() {
-    // Implementar salvamento do produto
-    console.log('Salvando produto:', this.novoProduto);
+async function salvarProduto() {
+    try {
+        const response = await fetch('/admin/produtos/salvar', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(this.novoProduto)
+        });
+        const result = await response.json();
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert('Erro: ' + result.message);
+        }
+    } catch (error) {
+        alert('Erro ao salvar produto');
+    }
     this.modalNovoProduto = false;
-    // Reset form
-    this.novoProduto = {
-        nome: '',
-        categoria: '',
-        preco: '',
-        descricao: '',
-        especificacoes: '',
-        disponibilidade: 'disponivel'
-    };
+    this.novoProduto = {nome: '', categoria: '', preco: '', descricao: '', especificacoes: '', disponibilidade: 'disponivel'};
+}
+async function atualizarProduto() {
+    try {
+        const response = await fetch('/admin/produtos/salvar', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(this.produtoSelecionado)
+        });
+        const result = await response.json();
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert('Erro: ' + result.message);
+        }
+    } catch (error) {
+        alert('Erro ao atualizar produto');
+    }
+    this.modalEditarProduto = false;
+}
+async function excluirProduto(id) {
+    if (confirm('Tem certeza que deseja excluir este produto?')) {
+        try {
+            const response = await fetch('/admin/produtos/excluir', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: id})
+            });
+            const result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                location.reload();
+            } else {
+                alert('Erro: ' + result.message);
+            }
+        } catch (error) {
+            alert('Erro ao excluir produto');
+        }
+    }
 }
 </script>

@@ -94,7 +94,7 @@
                     <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         <!-- Header do Card -->
                         <div class="relative">
-                            <img :src="fornecedor.imagem || fornecedor.banner" :alt="fornecedor.nome" class="w-full h-48 object-cover">
+                            <img :src="fornecedor.imagem || fornecedor.banner || 'https://picsum.photos/seed/' + (fornecedor.slug || 'wood') + '/800/400'" :alt="fornecedor.nome" class="w-full h-48 object-cover">
                             <div class="absolute top-4 right-4">
                                 <span class="bg-forest-green text-white px-3 py-1 rounded-full text-sm font-medium" x-text="regioesObj[fornecedor.regiao] || fornecedor.regiao"></span>
                             </div>
@@ -124,20 +124,20 @@
                             <!-- Especialidades -->
                             <div class="mb-4">
                                 <div class="flex flex-wrap gap-2">
-                                    <template x-for="especialidade in (fornecedor.especialidades || []).slice(0, 3)" :key="especialidade">
+                                    <template x-for="especialidade in Array.isArray(fornecedor.especialidades) ? fornecedor.especialidades.slice(0, 3) : []" :key="especialidade">
                                         <span class="bg-wood-light text-wood-brown px-2 py-1 rounded text-xs font-medium" x-text="especialidade"></span>
                                     </template>
-                                    <span x-show="fornecedor.especialidades && fornecedor.especialidades.length > 3" class="text-gray-500 text-xs" x-text="'+' + (fornecedor.especialidades.length - 3) + ' mais'"></span>
+                                    <span x-show="Array.isArray(fornecedor.especialidades) && fornecedor.especialidades.length > 3" class="text-gray-500 text-xs" x-text="'+' + (fornecedor.especialidades.length - 3) + ' mais'"></span>
                                 </div>
                             </div>
                             
                             <!-- Certificações -->
-                            <div class="mb-4" x-show="fornecedor.certificacoes && Array.isArray(fornecedor.certificacoes) && fornecedor.certificacoes.length > 0">
+                            <div class="mb-4" x-show="Array.isArray(fornecedor.certificacoes) && fornecedor.certificacoes.length > 0">
                                 <div class="flex items-center space-x-2">
                                     <i data-lucide="award" class="w-4 h-4 text-green-600"></i>
                                     <span class="text-sm text-gray-600">Certificações:</span>
                                     <div class="flex space-x-1">
-                                        <template x-for="cert in (fornecedor.certificacoes || []).slice(0, 2)" :key="cert">
+                                        <template x-for="cert in Array.isArray(fornecedor.certificacoes) ? fornecedor.certificacoes.slice(0, 2) : []" :key="cert">
                                             <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium" x-text="cert"></span>
                                         </template>
                                     </div>
@@ -161,8 +161,8 @@
                             </div>
                             
                             <!-- Links Rápidos -->
-                            <div class="grid grid-cols-2 gap-2 mb-4" x-show="fornecedor.links && Array.isArray(fornecedor.links) && fornecedor.links.length > 0">
-                                <template x-for="link in (fornecedor.links || []).slice(0, 4)" :key="link.tipo">
+                            <div class="grid grid-cols-2 gap-2 mb-4" x-show="Array.isArray(fornecedor.links) && fornecedor.links.length > 0">
+                                <template x-for="link in Array.isArray(fornecedor.links) ? fornecedor.links.slice(0, 4) : []" :key="link.tipo">
                                     <a :href="'/fornecedor/' + fornecedor.slug + '/link/' + link.tipo" 
                                        class="flex items-center justify-center space-x-2 bg-gray-50 hover:bg-gray-100 text-gray-700 py-2 px-3 rounded-lg transition-colors text-sm">
                                         <i :data-lucide="link.icone" class="w-4 h-4"></i>

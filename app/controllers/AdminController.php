@@ -175,23 +175,44 @@ class AdminController
         $this->verificarAutenticacao();
         
         $request = $this->app->request();
-        $dados = [
-            'nome' => $request->data->nome,
-            'categoria' => $request->data->categoria,
-            'preco' => (float) $request->data->preco,
-            'descricao' => $request->data->descricao,
-            'especificacoes' => $request->data->especificacoes,
-            'disponibilidade' => $request->data->disponibilidade
-        ];
+        $data = $request->data;
         
-        // Aqui você salvaria no banco de dados
-        // Por enquanto, apenas simular sucesso
+        try {
+            $db = Flight::db();
+            
+            if (isset($data->id) && !empty($data->id)) {
+                // Update
+                $stmt = $db->prepare("UPDATE products SET name = ?, category = ?, price_per_m3 = ?, description = ?, specifications = ?, availability = ?, updated_at = NOW() WHERE id = ?");
+                $stmt->execute([$data->nome, $data->categoria, (float)$data->preco, $data->descricao, $data->especificacoes, $data->disponibilidade, $data->id]);
+                $message = 'Produto atualizado com sucesso!';
+            } else {
+                // Create
+                $stmt = $db->prepare("INSERT INTO products (name, category, price_per_m3, description, specifications, availability, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())");
+                $stmt->execute([$data->nome, $data->categoria, (float)$data->preco, $data->descricao, $data->especificacoes, $data->disponibilidade]);
+                $message = 'Produto criado com sucesso!';
+            }
+            
+            $this->app->json(['success' => true, 'message' => $message]);
+        } catch (Exception $e) {
+            $this->app->json(['success' => false, 'message' => 'Erro ao salvar produto']);
+        }
+    }
+    
+    public function excluirProduto(): void
+    {
+        $this->verificarAutenticacao();
         
-        $this->app->json([
-            'sucesso' => true,
-            'mensagem' => 'Produto salvo com sucesso',
-            'produto_id' => rand(1000, 9999)
-        ]);
+        $request = $this->app->request();
+        $id = $request->data->id;
+        
+        try {
+            $db = Flight::db();
+            $stmt = $db->prepare("DELETE FROM products WHERE id = ?");
+            $stmt->execute([$id]);
+            $this->app->json(['success' => true, 'message' => 'Produto excluído com sucesso!']);
+        } catch (Exception $e) {
+            $this->app->json(['success' => false, 'message' => 'Erro ao excluir produto']);
+        }
     }
 
     /**
