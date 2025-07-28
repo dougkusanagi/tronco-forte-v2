@@ -1,4 +1,5 @@
-<div class="bg-gray-50 py-12">
+<?php use app\utils\ImageHelper; ?>
+<div class="bg-gray-50 py-12" x-data="filtrosBlog()">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="text-center mb-12">
@@ -7,7 +8,7 @@
         </div>
         
         <!-- Filtros e Busca -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8" x-data="filtrosBlog()">
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Buscar Artigos</label>
@@ -52,7 +53,8 @@
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-12">
             <div class="grid grid-cols-1 lg:grid-cols-2">
                 <div class="relative">
-                    <img src="<?= $artigo_destaque['imagem_destaque'] ?? 'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=wooden%20construction%20materials%20lumber%20yard&image_size=landscape_16_9' ?>" alt="<?= htmlspecialchars($artigo_destaque['titulo']) ?>" class="w-full h-80 lg:h-full object-cover">
+                    <?php $imagemDestaque = ImageHelper::getImageOrFallback($artigo_destaque['imagem_destaque'] ?? null, 'blog'); ?>
+                    <img src="<?= $imagemDestaque ?>" alt="<?= htmlspecialchars($artigo_destaque['titulo']) ?>" class="w-full h-80 lg:h-full object-cover">
                     <div class="absolute top-4 left-4">
                         <span class="bg-wood-brown text-white px-3 py-1 rounded-full text-sm font-medium">Em Destaque</span>
                     </div>
@@ -67,7 +69,8 @@
                     <p class="text-lg text-gray-600 mb-6"><?= $artigo_destaque['resumo'] ?></p>
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <img src="<?= $artigo_destaque['autor']['avatar'] ?? 'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20carpenter%20avatar%20portrait&image_size=square' ?>" alt="<?= htmlspecialchars($artigo_destaque['autor']['nome'] ?? 'Autor') ?>" class="w-10 h-10 rounded-full object-cover">
+                            <?php $avatarDestaque = ImageHelper::getImageOrFallback($artigo_destaque['autor']['avatar'] ?? null, 'avatar'); ?>
+                            <img src="<?= $avatarDestaque ?>" alt="<?= htmlspecialchars($artigo_destaque['autor']['nome'] ?? 'Autor') ?>" class="w-10 h-10 rounded-full object-cover">
                             <div>
                                 <div class="font-medium text-gray-900"><?= htmlspecialchars($artigo_destaque['autor']['nome'] ?? 'Autor') ?></div>
                                 <div class="text-sm text-gray-500"><?= htmlspecialchars($artigo_destaque['autor']['cargo'] ?? 'Especialista') ?></div>
@@ -181,15 +184,15 @@
             <p class="text-lg text-gray-600">Encontre conteúdo específico para suas necessidades profissionais</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6" x-data="{ categorias: <?= json_encode($categorias) ?> }">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             <template x-for="categoria in categorias" :key="categoria.slug">
                 <a :href="'/blog?categoria=' + categoria.slug" class="bg-white rounded-xl p-6 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
-                    <div :class="'w-16 h-16 bg-' + categoria.cor + '-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-' + categoria.cor + '-200 transition-colors'">
-                        <i :data-lucide="categoria.icone" :class="'w-8 h-8 text-' + categoria.cor + '-600'"></i>
+                    <div class="w-16 h-16 bg-wood-brown bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-wood-brown group-hover:bg-opacity-20 transition-colors">
+                        <i data-lucide="folder" class="w-8 h-8 text-wood-brown"></i>
                     </div>
                     <h3 class="font-bold text-gray-900 mb-2" x-text="categoria.name"></h3>
-                    <p class="text-gray-600 text-sm mb-3" x-text="categoria.descricao"></p>
-                    <span :class="'text-' + categoria.cor + '-600 text-sm font-medium'" x-text="categoria.total_artigos + ' artigos'"></span>
+                    <p class="text-gray-600 text-sm mb-3" x-text="categoria.description"></p>
+                    <span class="text-wood-brown text-sm font-medium" x-text="categoria.total_posts + ' artigos'"></span>
                 </a>
             </template>
         </div>
@@ -213,18 +216,22 @@
 
 <script>
 function filtrosBlog() {
+    const artigosData = <?= json_encode($artigos ?? []) ?>;
+    const categoriasData = <?= json_encode($categorias ?? []) ?>;
+    
     return {
-        artigos: <?= json_encode($artigos ?? []) ?>.map(artigo => ({
+        artigos: artigosData.map(artigo => ({
             ...artigo,
             imagem_destaque: artigo.imagem_destaque || 'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=wooden%20construction%20materials%20lumber%20yard&image_size=landscape_4_3',
             tags: artigo.tags || [],
             visualizacoes: artigo.visualizacoes || 0,
             autor: {
-                nome: artigo.autor?.nome || 'Autor',
-                avatar: artigo.autor?.avatar || 'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20carpenter%20avatar%20portrait&image_size=square',
-                cargo: artigo.autor?.cargo || 'Especialista'
+                nome: (artigo.autor && artigo.autor.nome) || 'Autor',
+                avatar: (artigo.autor && artigo.autor.avatar) || 'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20carpenter%20avatar%20portrait&image_size=square',
+                cargo: (artigo.autor && artigo.autor.cargo) || 'Especialista'
             }
         })),
+        categorias: categoriasData,
         filtros: {
             busca: '',
             categoria: '',

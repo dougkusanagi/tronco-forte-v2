@@ -9,6 +9,12 @@ CREATE TABLE IF NOT EXISTS blog_posts (
     category_id INTEGER,
     author_id INTEGER NOT NULL,
     status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
+    featured INTEGER DEFAULT 0,
+    meta_title TEXT,
+    meta_description TEXT,
+    tags TEXT,
+    reading_time INTEGER DEFAULT 5,
+    views INTEGER DEFAULT 0,
     published_at TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     updated_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -22,8 +28,10 @@ CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_category_id ON blog_posts(category_id);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_author_id ON blog_posts(author_id);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_status ON blog_posts(status);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_featured ON blog_posts(featured);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_published_at ON blog_posts(published_at);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_created_at ON blog_posts(created_at);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_views ON blog_posts(views);
 
 -- Create trigger to update updated_at timestamp
 CREATE TRIGGER IF NOT EXISTS update_blog_posts_updated_at

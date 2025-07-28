@@ -493,28 +493,27 @@ class AdminController
 
     private function obterProdutosAdmin(): array
     {
-        return [
-            [
-                'id' => 1,
-                'nome' => 'Pinus Tratado',
-                'categoria' => 'Estrutural',
-                'preco' => 450,
-                'estoque' => 'Em estoque',
-                'status' => 'Ativo',
-                'visualizacoes' => 1250,
-                'ultima_atualizacao' => '2024-01-10'
-            ],
-            [
-                'id' => 2,
-                'nome' => 'Ipê para Deck',
-                'categoria' => 'Deck',
-                'preco' => 1200,
-                'estoque' => 'Baixo',
-                'status' => 'Ativo',
-                'visualizacoes' => 890,
-                'ultima_atualizacao' => '2024-01-08'
-            ]
-        ];
+        try {
+            $db = Flight::db();
+            $stmt = $db->prepare("
+                SELECT 
+                    id,
+                    name as nome,
+                    category as categoria,
+                    price_per_m3 as preco,
+                    availability as estoque,
+                    CASE WHEN is_active = 1 THEN 'Ativo' ELSE 'Inativo' END as status,
+                    COALESCE(views, 0) as visualizacoes,
+                    DATE(updated_at) as ultima_atualizacao
+                FROM products 
+                ORDER BY updated_at DESC
+            ");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log('Erro ao obter produtos admin: ' . $e->getMessage());
+            return [];
+        }
     }
 
     private function obterFornecedoresAdmin(): array
@@ -570,7 +569,17 @@ class AdminController
 
     private function obterCategoriasAdmin(): array
     {
-        return ['Estrutural', 'Acabamento', 'Deck', 'Madeiras Nobres'];
+        try {
+            $db = Flight::db();
+            $stmt = $db->prepare("SELECT DISTINCT category FROM products WHERE is_active = 1 ORDER BY category");
+            $stmt->execute();
+            $categorias = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            
+            return $categorias ?: ['Estrutural', 'Acabamento', 'Deck', 'Madeiras Nobres'];
+        } catch (Exception $e) {
+            error_log('Erro ao obter categorias admin: ' . $e->getMessage());
+            return ['Estrutural', 'Acabamento', 'Deck', 'Madeiras Nobres'];
+        }
     }
 
     private function obterRegioesAdmin(): array

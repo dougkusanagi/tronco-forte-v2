@@ -1,14 +1,16 @@
 <?php
 
-if (!function_exists('dump')) {
+if (!function_exists('d')) {
     /**
      * Dump one or more variables.
      * 
      * @param mixed ...$var
      */
-    function dump(...$var) {
+    function d(...$var) {
         foreach ($var as $v) {
+            echo "<pre>";
             var_dump($v);
+            echo "</pre>";
         }
     }
 }
@@ -20,7 +22,7 @@ if (!function_exists('dd')) {
      * @param mixed ...$var
      */
     function dd(...$var) {
-        dump($var);
+        d($var);
         die();
     }
 }

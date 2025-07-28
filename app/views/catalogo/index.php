@@ -1,12 +1,12 @@
 <div class="bg-gray-50 py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="filtrosCatalogo()">
         <div class="text-center mb-12">
             <h1 class="text-4xl font-display font-bold text-gray-900 mb-4">Catálogo de Madeiras</h1>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">Explore nossa ampla seleção de madeiras certificadas, todas com garantia de origem e qualidade superior.</p>
         </div>
         
         <!-- Filtros -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8" x-data="filtrosCatalogo()">
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
@@ -60,7 +60,7 @@
         </div>
         
         <!-- Grid de Produtos -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" x-data="{ produtos: <?= json_encode($produtos) ?> }">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <template x-for="produto in produtosFiltrados" :key="produto.id">
                 <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
                     <div class="relative">
@@ -82,15 +82,15 @@
                         <div class="space-y-2 mb-4">
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">Densidade:</span>
-                                <span class="font-medium" x-text="produto.especificacoes.densidade"></span>
+                                <span class="font-medium" x-text="produto.especificacoes.Densidade || 'N/A'"></span>
                             </div>
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Dureza:</span>
-                                <span class="font-medium" x-text="produto.especificacoes.dureza"></span>
+                                <span class="text-gray-600">Umidade:</span>
+                                <span class="font-medium" x-text="produto.especificacoes.Umidade || 'N/A'"></span>
                             </div>
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Resistência:</span>
-                                <span class="font-medium" x-text="produto.especificacoes.resistencia_umidade"></span>
+                                <span class="text-gray-600">Durabilidade:</span>
+                                <span class="font-medium" x-text="produto.especificacoes.Durabilidade || 'N/A'"></span>
                             </div>
                         </div>
                         
@@ -103,7 +103,7 @@
                         
                         <div class="flex justify-between items-center">
                             <div>
-                                <span class="text-2xl font-bold text-wood-brown" x-text="produto.preco"></span>
+                                <span class="text-2xl font-bold text-wood-brown" x-text="produto.preco_formatado"></span>
                                 <span class="text-gray-600">/m³</span>
                             </div>
                             <a :href="`/catalogo/produto/${produto.id}`" class="bg-wood-brown text-white px-4 py-2 rounded-lg hover:bg-wood-dark transition-colors font-medium">
@@ -162,6 +162,12 @@ function filtrosCatalogo() {
         
         produtos: <?= json_encode($produtos) ?>,
         
+        init() {
+            console.log('Alpine.js initialized');
+            console.log('Products data:', this.produtos);
+            console.log('Products count:', this.produtos.length);
+        },
+        
         get produtosFiltrados() {
             let resultado = this.produtos;
             
@@ -179,7 +185,7 @@ function filtrosCatalogo() {
             if (this.filtros.preco) {
                 const [min, max] = this.filtros.preco.split('-').map(p => p.replace('+', '999999'));
                 resultado = resultado.filter(p => {
-                    const preco = parseInt(p.preco.replace(/[^0-9]/g, ''));
+                    const preco = p.preco_m3;
                     if (max) {
                         return preco >= parseInt(min) && preco <= parseInt(max);
                     } else {

@@ -74,16 +74,14 @@ class MigrateCommand extends AbstractBaseCommand
             }
             
             $dbConfig = $config['database'];
+            $dbType = $dbConfig['type'] ?? 'sqlite';
             
             // Debug: Show configuration
+            $io->info('Database type: ' . $dbType);
             $io->info('Database config: ' . json_encode($dbConfig));
             
-            // Check if using SQLite
-            $isUsingSQLite = isset($dbConfig['file_path']);
-            $io->info('Using SQLite: ' . ($isUsingSQLite ? 'Yes' : 'No'));
-            
-            if ($isUsingSQLite) {
-                 $this->runSQLiteMigrations($io, $dbConfig);
+            if ($dbType === 'sqlite') {
+                 $this->runSQLiteMigrations($io, $dbConfig['sqlite']);
              } else {
                  $db = Database::getInstance();
                  $db->runMigrations();
@@ -107,10 +105,10 @@ class MigrateCommand extends AbstractBaseCommand
             $configPath = __DIR__ . '/../config/config.php';
             $config = require $configPath;
             $dbConfig = $config['database'];
+            $dbType = $dbConfig['type'] ?? 'sqlite';
             
-            // Check if using SQLite
-            if (isset($dbConfig['file_path'])) {
-                $this->runSQLiteSeeders($io, $dbConfig);
+            if ($dbType === 'sqlite') {
+                $this->runSQLiteSeeders($io, $dbConfig['sqlite']);
             } else {
                 $db = Database::getInstance();
                 $db->runSeeders();
@@ -131,10 +129,10 @@ class MigrateCommand extends AbstractBaseCommand
             // Get database configuration
             $config = require __DIR__ . '/../config/config.php';
             $dbConfig = $config['database'];
+            $dbType = $dbConfig['type'] ?? 'sqlite';
             
-            // Check if using SQLite
-            if (isset($dbConfig['file_path'])) {
-                $dbFile = $dbConfig['file_path'];
+            if ($dbType === 'sqlite') {
+                $dbFile = $dbConfig['sqlite']['file_path'];
                 
                 if (file_exists($dbFile)) {
                     $io->info("This will delete the existing SQLite database at: $dbFile");
@@ -151,20 +149,20 @@ class MigrateCommand extends AbstractBaseCommand
             } else {
                  $io->info('Recreating database...');
                  // For MySQL, we'll handle database recreation manually
-                 $this->recreateMySQLDatabase($io, $dbConfig);
+                 $this->recreateMySQLDatabase($io, $dbConfig['mysql']);
              }
             
             $io->info('Running migrations...');
-            if (isset($dbConfig['file_path'])) {
-                 $this->runSQLiteMigrations($io, $dbConfig);
+            if ($dbType === 'sqlite') {
+                 $this->runSQLiteMigrations($io, $dbConfig['sqlite']);
              } else {
                  $db = Database::getInstance();
                  $db->runMigrations();
              }
             
             $io->info('Running seeders...');
-            if (isset($dbConfig['file_path'])) {
-                $this->runSQLiteSeeders($io, $dbConfig);
+            if ($dbType === 'sqlite') {
+                $this->runSQLiteSeeders($io, $dbConfig['sqlite']);
             } else {
                 $db = Database::getInstance();
                 $db->runSeeders();
@@ -179,9 +177,9 @@ class MigrateCommand extends AbstractBaseCommand
     /**
      * Run SQLite-compatible migrations
      */
-    private function runSQLiteMigrations($io, array $dbConfig)
+    private function runSQLiteMigrations($io, array $sqliteConfig)
     {
-        $pdo = new \PDO('sqlite:' . $dbConfig['file_path']);
+        $pdo = new \PDO('sqlite:' . $sqliteConfig['file_path']);
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         
         // Enable foreign keys and WAL mode for better performance
@@ -275,9 +273,9 @@ class MigrateCommand extends AbstractBaseCommand
      /**
       * Run SQLite-compatible seeders
       */
-     private function runSQLiteSeeders($io, array $dbConfig)
+     private function runSQLiteSeeders($io, array $sqliteConfig)
      {
-         $pdo = new \PDO('sqlite:' . $dbConfig['file_path']);
+         $pdo = new \PDO('sqlite:' . $sqliteConfig['file_path']);
          $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
          
          // Enable foreign keys

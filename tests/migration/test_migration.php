@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/app/database/Database.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../app/database/Database.php';
 
 use app\database\Database;
 
@@ -12,7 +12,7 @@ try {
     echo "Testing direct SQL execution...\n";
     
     // Read the migration file
-    $sql = file_get_contents(__DIR__ . '/database/migrations/001_create_users_table.sql');
+    $sql = file_get_contents(__DIR__ . '/../../database/migrations/001_create_users_table.sql');
     echo "SQL content:\n" . $sql . "\n\n";
     
     // Split and execute statements

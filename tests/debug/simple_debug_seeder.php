@@ -1,11 +1,11 @@
 <?php
 
 try {
-    $pdo = new PDO('sqlite:database.sqlite');
+    $pdo = new PDO('sqlite:../../database.sqlite');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Test the fornecedores seeder specifically
-    $file = __DIR__ . '/database/seeders/003_fornecedores_seeder.sql';
+    $file = __DIR__ . '/../../database/seeders/003_fornecedores_seeder.sql';
     $sql = file_get_contents($file);
     
     echo "Original SQL length: " . strlen($sql) . "\n";

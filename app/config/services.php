@@ -10,16 +10,27 @@ use Tracy\Debugger;
  * @var Engine $app
  */
 
-// MySQL DSN configuration
-// $dsn = 'mysql:host=' . $config['database']['host'] . ';dbname=' . $config['database']['dbname'] . ';charset=utf8mb4';
+// Database configuration based on centralized config
+$dbConfig = $config['database'];
+$dbType = $dbConfig['type'] ?? 'sqlite';
 
-// SQLite DSN configuration (commented out)
-$dsn = 'sqlite:' . $config['database']['file_path'];
+if ($dbType === 'mysql') {
+    $mysqlConfig = $dbConfig['mysql'];
+    $dsn = 'mysql:host=' . $mysqlConfig['host'] . ';dbname=' . $mysqlConfig['dbname'] . ';charset=' . ($mysqlConfig['charset'] ?? 'utf8mb4');
+    $user = $mysqlConfig['user'];
+    $password = $mysqlConfig['password'];
+} else {
+    // SQLite configuration
+    $sqliteConfig = $dbConfig['sqlite'];
+    $dsn = 'sqlite:' . $sqliteConfig['file_path'];
+    $user = null;
+    $password = null;
+}
 
-// Uncomment the below lines if you want to add a Flight::db() service
+// Register database service
 // In development, you'll want the class that captures the queries for you. In production, not so much.
 $pdoClass = Debugger::$showBar === true ? PdoQueryCapture::class : PdoWrapper::class;
-$app->register('db', $pdoClass, [ $dsn, $config['database']['user'] ?? null, $config['database']['password'] ?? null ]);
+$app->register('db', $pdoClass, [ $dsn, $user, $password ]);
 
 // Got google oauth stuff? You could register that here
 // $app->register('google_oauth', Google_Client::class, [ $config['google_oauth'] ]);

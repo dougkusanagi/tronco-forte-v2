@@ -55,7 +55,7 @@ class Visitor extends Model
     private function isUniqueVisitor(string $ipAddress): bool
     {
         try {
-            $sql = "SELECT COUNT(*) FROM {$this->table} WHERE ip_address = ? AND created_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)";
+            $sql = "SELECT COUNT(*) FROM {$this->table} WHERE ip_address = ? AND created_at > datetime('now', '-24 hours')";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$ipAddress]);
             return $stmt->fetchColumn() == 0;
@@ -73,7 +73,7 @@ class Visitor extends Model
         try {
             $sql = "SELECT session_id FROM {$this->table} 
                    WHERE ip_address = ? AND user_agent = ? 
-                   AND created_at > DATE_SUB(NOW(), INTERVAL 30 MINUTE) 
+                   AND created_at > datetime('now', '-30 minutes') 
                    ORDER BY created_at DESC LIMIT 1";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$ipAddress, $userAgent]);
@@ -153,20 +153,23 @@ class Visitor extends Model
                        COUNT(DISTINCT CASE WHEN is_unique = 1 THEN ip_address END) as unique_visits,
                        COUNT(*) as page_views
                    FROM {$this->table} 
-                   WHERE DATE(created_at) = ?";
+                   WHERE date(created_at) = ?";
             
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$today]);
             $stats = $stmt->fetch(\PDO::FETCH_ASSOC);
             
-            // Insert or update daily stats
-            $sql = "INSERT INTO daily_visitors (date, total_visits, unique_visits, page_views, updated_at) 
-                   VALUES (?, ?, ?, ?, NOW()) 
-                   ON DUPLICATE KEY UPDATE 
-                   total_visits = VALUES(total_visits),
-                   unique_visits = VALUES(unique_visits),
-                   page_views = VALUES(page_views),
-                   updated_at = NOW()";
+            // Check if daily_visitors table exists, if not skip this operation
+            $checkTable = "SELECT name FROM sqlite_master WHERE type='table' AND name='daily_visitors'";
+            $tableExists = $this->db->query($checkTable)->fetchColumn();
+            
+            if (!$tableExists) {
+                return; // Skip if table doesn't exist
+            }
+            
+            // SQLite-compatible upsert using INSERT OR REPLACE
+            $sql = "INSERT OR REPLACE INTO daily_visitors (date, total_visits, unique_visits, page_views, updated_at) 
+                   VALUES (?, ?, ?, ?, datetime('now'))";
             
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
@@ -187,13 +190,13 @@ class Visitor extends Model
     {
         try {
             $sql = "SELECT 
-                       DATE(created_at) as date,
+                       date(created_at) as date,
                        COUNT(*) as total_visits,
                        COUNT(DISTINCT ip_address) as unique_visits,
                        COUNT(DISTINCT session_id) as sessions
                    FROM {$this->table} 
-                   WHERE created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
-                   GROUP BY DATE(created_at)
+                   WHERE created_at >= datetime('now', '-' || ? || ' days')
+                   GROUP BY date(created_at)
                    ORDER BY date DESC";
             
             $stmt = $this->db->prepare($sql);
@@ -230,7 +233,7 @@ class Visitor extends Model
                        COUNT(DISTINCT ip_address) as unique_visits,
                        COUNT(DISTINCT session_id) as sessions
                    FROM {$this->table} 
-                   WHERE DATE(created_at) = CURDATE()";
+                   WHERE date(created_at) = date('now')";
             
             $stmt = $this->db->query($sql);
             return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [
@@ -258,7 +261,7 @@ class Visitor extends Model
                        COUNT(*) as visits,
                        COUNT(DISTINCT ip_address) as unique_visitors
                    FROM {$this->table} 
-                   WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                   WHERE created_at >= datetime('now', '-30 days')
                    GROUP BY page_url
                    ORDER BY visits DESC
                    LIMIT ?";

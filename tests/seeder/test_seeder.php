@@ -1,7 +1,7 @@
 <?php
 
 try {
-    $pdo = new PDO('sqlite:database.sqlite');
+    $pdo = new PDO('sqlite:../../database.sqlite');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Test blog categories insert

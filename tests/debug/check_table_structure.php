@@ -1,7 +1,7 @@
 <?php
 
 try {
-    $pdo = new PDO('sqlite:database.sqlite');
+    $pdo = new PDO('sqlite:../../database.sqlite');
     
     echo "Blog Categories table structure:\n";
     $result = $pdo->query('PRAGMA table_info(blog_categories)');

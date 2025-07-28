@@ -66,15 +66,29 @@ if (Debugger::$showBar && php_sapi_name() !== 'cli') {
  * What you store here is totally up to you.
  */
 return [
+	// Application URL configuration
+	'app' => [
+		'url' => 'http://localhost:8000', // Change this to your domain URL
+		'base_path' => '', // Set to subdirectory if app is in a subfolder (e.g., '/myapp')
+	],
+	
 	'database' => [
-		// uncomment the below 4 lines for mysql
-		// 'host' => 'localhost',
-		// 'dbname' => 'dbname',
-		// 'user' => 'user',
-		// 'password' => 'password'
-
-		// uncomment the following line for sqlite
-		// 'file_path' => __DIR__ . $ds . '..' . $ds . 'database.sqlite'
+		// Database type: 'mysql' or 'sqlite'
+		'type' => 'sqlite', // Change to 'mysql' for MySQL
+		
+		// MySQL configuration (used when type = 'mysql')
+		'mysql' => [
+			'host' => 'localhost',
+			'dbname' => 'your_database_name',
+			'user' => 'your_username',
+			'password' => 'your_password',
+			'charset' => 'utf8mb4'
+		],
+		
+		// SQLite configuration (used when type = 'sqlite')
+		'sqlite' => [
+			'file_path' => __DIR__ . $ds . '..' . $ds . '..' . $ds . 'database.sqlite'
+		]
 	],
 
 	// this is just here for an example

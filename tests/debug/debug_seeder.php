@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/app/database/Database.php';
+require_once __DIR__ . '/../../app/database/Database.php';
 use app\database\Database;
 
 try {
@@ -8,7 +8,7 @@ try {
     $pdo = $db->getConnection();
     
     // Test the fornecedores seeder specifically
-    $file = __DIR__ . '/database/seeders/003_fornecedores_seeder.sql';
+    $file = __DIR__ . '/../../database/seeders/003_fornecedores_seeder.sql';
     $sql = file_get_contents($file);
     
     echo "Original SQL:\n";

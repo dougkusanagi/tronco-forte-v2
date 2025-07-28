@@ -1,7 +1,7 @@
 <?php
 
-require_once 'vendor/autoload.php';
-require_once 'app/config/bootstrap.php';
+require_once '../../vendor/autoload.php';
+require_once '../../app/config/bootstrap.php';
 
 // Get database connection
 $db = Flight::db();
