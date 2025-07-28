@@ -34,9 +34,9 @@ CREATE TABLE IF NOT EXISTS fornecedores (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_fornecedores_slug ON fornecedores(slug);
-CREATE INDEX IF NOT EXISTS idx_fornecedores_regiao ON fornecedores(regiao);
-CREATE INDEX IF NOT EXISTS idx_fornecedores_cidade ON fornecedores(cidade);
-CREATE INDEX IF NOT EXISTS idx_fornecedores_is_ativo ON fornecedores(is_ativo);
-CREATE INDEX IF NOT EXISTS idx_fornecedores_is_verificado ON fornecedores(is_verificado);
-CREATE INDEX IF NOT EXISTS idx_fornecedores_avaliacao ON fornecedores(avaliacao);
+CREATE INDEX idx_fornecedores_slug ON fornecedores(slug);
+CREATE INDEX idx_fornecedores_regiao ON fornecedores(regiao);
+CREATE INDEX idx_fornecedores_cidade ON fornecedores(cidade);
+CREATE INDEX idx_fornecedores_is_ativo ON fornecedores(is_ativo);
+CREATE INDEX idx_fornecedores_is_verificado ON fornecedores(is_verificado);
+CREATE INDEX idx_fornecedores_avaliacao ON fornecedores(avaliacao);

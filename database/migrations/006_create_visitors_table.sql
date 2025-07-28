@@ -21,11 +21,11 @@ CREATE TABLE IF NOT EXISTS visitors (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_visitors_ip ON visitors(ip_address);
-CREATE INDEX IF NOT EXISTS idx_visitors_session ON visitors(session_id);
-CREATE INDEX IF NOT EXISTS idx_visitors_page_url ON visitors(page_url);
-CREATE INDEX IF NOT EXISTS idx_visitors_created_at ON visitors(created_at);
-CREATE INDEX IF NOT EXISTS idx_visitors_is_unique ON visitors(is_unique);
+CREATE INDEX idx_visitors_ip ON visitors(ip_address);
+CREATE INDEX idx_visitors_session ON visitors(session_id);
+CREATE INDEX idx_visitors_page_url ON visitors(page_url);
+CREATE INDEX idx_visitors_created_at ON visitors(created_at);
+CREATE INDEX idx_visitors_is_unique ON visitors(is_unique);
 
 -- Create daily visitors summary table
 CREATE TABLE IF NOT EXISTS daily_visitors (
@@ -40,4 +40,4 @@ CREATE TABLE IF NOT EXISTS daily_visitors (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_daily_visitors_date ON daily_visitors(date);
+CREATE INDEX idx_daily_visitors_date ON daily_visitors(date);

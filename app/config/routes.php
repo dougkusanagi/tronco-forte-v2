@@ -72,7 +72,8 @@ $router->group('/api', function() use ($router, $app) {
 	$router->post('/fornecedores/clique', [FornecedorController::class, 'registrarClique']);
 	
 	// Admin API routes
-    $router->post('/admin/produto', [AdminController::class, 'salvarProduto']);
+    $router->post('/admin/produtos/salvar', [AdminController::class, 'salvarProduto']);
+    $router->post('/admin/produtos/excluir', [AdminController::class, 'excluirProduto']);
     $router->post('/admin/fornecedor', [AdminController::class, 'salvarFornecedor']);
     $router->post('/admin/artigo', [AdminController::class, 'salvarArtigo']);
     $router->delete('/admin/artigo', [AdminController::class, 'excluirArtigo']);

@@ -2,7 +2,7 @@
 -- Created: 2024-01-01
 -- Description: Dados iniciais de fornecedores parceiros
 
-INSERT OR REPLACE INTO fornecedores (
+REPLACE INTO fornecedores (
     nome, slug, descricao, email, telefone, whatsapp, website, 
     cidade, estado, regiao, especialidades, certificacoes, 
     imagem, banner, avaliacao, total_avaliacoes, 

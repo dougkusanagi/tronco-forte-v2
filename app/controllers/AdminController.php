@@ -108,8 +108,8 @@ class AdminController
             // Set the content for the admin layout
             $content = $this->app->view()->fetch('admin/produtos', $data);
             $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
-        $data['url_helper'] = UrlHelper::class;
+            $data['base_path'] = UrlHelper::getBasePath();
+            $data['url_helper'] = UrlHelper::class;
             
             // Render with admin layout
             $this->app->render('admin_layout', $data);
@@ -119,6 +119,8 @@ class AdminController
             Flight::halt(500, 'Internal Server Error: ' . $e->getMessage());
         }
     }
+
+
 
     /**
      * Relatórios e analytics
@@ -175,27 +177,100 @@ class AdminController
         $this->verificarAutenticacao();
         
         $request = $this->app->request();
-        $data = $request->data;
+        $input = $request->getBody();
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            $data = (object)$request->data->getData();
+        } else {
+            $data = (object)$data;
+        }
         
         try {
             $db = Flight::db();
             
+            // Gerar slug a partir do nome
+            $slug = $this->gerarSlug($data->nome);
+            
+            // Mapear disponibilidade
+            $availability = $this->mapAvailability($data->disponibilidade ?? 'disponivel');
+            
             if (isset($data->id) && !empty($data->id)) {
                 // Update
-                $stmt = $db->prepare("UPDATE products SET name = ?, category = ?, price_per_m3 = ?, description = ?, specifications = ?, availability = ?, updated_at = NOW() WHERE id = ?");
-                $stmt->execute([$data->nome, $data->categoria, (float)$data->preco, $data->descricao, $data->especificacoes, $data->disponibilidade, $data->id]);
+                $stmt = $db->prepare("
+                    UPDATE products SET 
+                        name = ?, 
+                        slug = ?,
+                        category = ?, 
+                        price_per_m3 = ?, 
+                        description = ?, 
+                        full_description = ?, 
+                        availability = ?, 
+                        updated_at = CURRENT_TIMESTAMP 
+                    WHERE id = ?
+                ");
+                $stmt->execute([
+                    $data->nome, 
+                    $slug,
+                    $data->categoria, 
+                    (float)$data->preco, 
+                    $data->descricao ?? '', 
+                    $data->especificacoes ?? '', 
+                    $availability, 
+                    $data->id
+                ]);
                 $message = 'Produto atualizado com sucesso!';
             } else {
                 // Create
-                $stmt = $db->prepare("INSERT INTO products (name, category, price_per_m3, description, specifications, availability, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())");
-                $stmt->execute([$data->nome, $data->categoria, (float)$data->preco, $data->descricao, $data->especificacoes, $data->disponibilidade]);
+                $stmt = $db->prepare("
+                    INSERT INTO products (
+                        name, slug, category, price_per_m3, description, full_description, 
+                        availability, is_active, created_at, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                ");
+                $stmt->execute([
+                    $data->nome, 
+                    $slug,
+                    $data->categoria, 
+                    (float)$data->preco, 
+                    $data->descricao ?? '', 
+                    $data->especificacoes ?? '', 
+                    $availability
+                ]);
                 $message = 'Produto criado com sucesso!';
             }
             
             $this->app->json(['success' => true, 'message' => $message]);
         } catch (Exception $e) {
-            $this->app->json(['success' => false, 'message' => 'Erro ao salvar produto']);
+            error_log('Erro ao salvar produto: ' . $e->getMessage());
+            $this->app->json(['success' => false, 'message' => 'Erro ao salvar produto: ' . $e->getMessage()]);
         }
+    }
+    
+    /**
+     * Gerar slug a partir do nome
+     */
+    private function gerarSlug(string $nome): string
+    {
+        $slug = strtolower($nome);
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+        $slug = trim($slug, '-');
+        return $slug;
+    }
+    
+    /**
+     * Mapear disponibilidade da view para o banco
+     */
+    private function mapAvailability(string $disponibilidade): string
+    {
+        $map = [
+            'disponivel' => 'in_stock',
+            'sob-consulta' => 'on_demand', 
+            'esgotado' => 'out_of_stock'
+        ];
+        
+        return $map[$disponibilidade] ?? 'in_stock';
     }
     
     public function excluirProduto(): void
@@ -203,7 +278,19 @@ class AdminController
         $this->verificarAutenticacao();
         
         $request = $this->app->request();
-        $id = $request->data->id;
+        $input = $request->getBody();
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            $id = $request->data->id ?? null;
+        } else {
+            $id = $data['id'] ?? null;
+        }
+        
+        if (!$id) {
+            $this->app->json(['success' => false, 'message' => 'ID do produto não fornecido']);
+            return;
+        }
         
         try {
             $db = Flight::db();
@@ -211,6 +298,7 @@ class AdminController
             $stmt->execute([$id]);
             $this->app->json(['success' => true, 'message' => 'Produto excluído com sucesso!']);
         } catch (Exception $e) {
+            error_log('Erro ao excluir produto: ' . $e->getMessage());
             $this->app->json(['success' => false, 'message' => 'Erro ao excluir produto']);
         }
     }
@@ -519,13 +607,17 @@ class AdminController
             $stmt = $db->prepare("
                 SELECT 
                     id,
-                    name as nome,
-                    category as categoria,
-                    price_per_m3 as preco,
-                    availability as estoque,
-                    CASE WHEN is_active = 1 THEN 'Ativo' ELSE 'Inativo' END as status,
-                    COALESCE(views, 0) as visualizacoes,
-                    DATE(updated_at) as ultima_atualizacao
+                    name,
+                    slug,
+                    category,
+                    price_per_m3,
+                    description,
+                    full_description,
+                    availability,
+                    is_active,
+                    COALESCE(views, 0) as views,
+                    created_at,
+                    updated_at
                 FROM products 
                 ORDER BY updated_at DESC
             ");

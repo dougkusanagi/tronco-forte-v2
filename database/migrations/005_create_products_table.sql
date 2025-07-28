@@ -25,10 +25,10 @@ CREATE TABLE IF NOT EXISTS products (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug);
-CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
-CREATE INDEX IF NOT EXISTS idx_products_is_active ON products(is_active);
-CREATE INDEX IF NOT EXISTS idx_products_is_featured ON products(is_featured);
-CREATE INDEX IF NOT EXISTS idx_products_availability ON products(availability);
-CREATE INDEX IF NOT EXISTS idx_products_price ON products(price_per_m3);
-CREATE INDEX IF NOT EXISTS idx_products_views ON products(views);
+CREATE INDEX idx_products_slug ON products(slug);
+CREATE INDEX idx_products_category ON products(category);
+CREATE INDEX idx_products_is_active ON products(is_active);
+CREATE INDEX idx_products_is_featured ON products(is_featured);
+CREATE INDEX idx_products_availability ON products(availability);
+CREATE INDEX idx_products_price ON products(price_per_m3);
+CREATE INDEX idx_products_views ON products(views);

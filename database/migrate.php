@@ -23,13 +23,26 @@ class DatabaseMigrator
     
     private function createMigrationsTable()
     {
-        $sql = "
-            CREATE TABLE IF NOT EXISTS migrations (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                migration TEXT NOT NULL UNIQUE,
-                executed_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        ";
+        $config = require __DIR__ . '/../app/config/config.php';
+        $dbType = $config['database']['type'] ?? 'sqlite';
+        
+        if ($dbType === 'mysql') {
+            $sql = "
+                CREATE TABLE IF NOT EXISTS migrations (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    migration VARCHAR(255) NOT NULL UNIQUE,
+                    executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ";
+        } else {
+            $sql = "
+                CREATE TABLE IF NOT EXISTS migrations (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    migration TEXT NOT NULL UNIQUE,
+                    executed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            ";
+        }
         
         $this->db->query($sql);
         echo "✓ Tabela de controle de migrations criada\n";
@@ -56,7 +69,12 @@ class DatabaseMigrator
                 
                 try {
                     $sql = file_get_contents($file);
-                    $this->db->query($sql);
+                    $statements = array_filter(array_map('trim', explode(';', $sql)));
+                    foreach ($statements as $stmt) {
+                        if (!empty($stmt)) {
+                            $this->db->query($stmt);
+                        }
+                    }
                     
                     // Registrar como executada
                     $this->db->query(
@@ -87,7 +105,12 @@ class DatabaseMigrator
             
             try {
                 $sql = file_get_contents($file);
-                $this->db->query($sql);
+                $statements = array_filter(array_map('trim', explode(';', $sql)));
+                foreach ($statements as $stmt) {
+                    if (!empty($stmt)) {
+                        $this->db->query($stmt);
+                    }
+                }
                 echo " ✓\n";
             } catch (Exception $e) {
                 echo " ✗ Erro: " . $e->getMessage() . "\n";
@@ -103,7 +126,7 @@ class DatabaseMigrator
         $tables = ['users', 'fornecedores', 'blog_categories', 'blog_posts'];
         
         foreach ($tables as $table) {
-            $result = $this->db->query("SELECT name FROM sqlite_master WHERE type='table' AND name=?", [$table]);
+            $result = $this->db->query("SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?", [$table]);
             if (!empty($result)) {
                 echo "✓ Tabela '{$table}' existe\n";
             } else {

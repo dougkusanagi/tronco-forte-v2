@@ -15,6 +15,6 @@ CREATE TABLE IF NOT EXISTS blog_categories (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_blog_categories_slug ON blog_categories(slug);
-CREATE INDEX IF NOT EXISTS idx_blog_categories_is_active ON blog_categories(is_active);
-CREATE INDEX IF NOT EXISTS idx_blog_categories_sort_order ON blog_categories(sort_order);
+CREATE INDEX idx_blog_categories_slug ON blog_categories(slug);
+CREATE INDEX idx_blog_categories_is_active ON blog_categories(is_active);
+CREATE INDEX idx_blog_categories_sort_order ON blog_categories(sort_order);

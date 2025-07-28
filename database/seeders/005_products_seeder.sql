@@ -2,7 +2,7 @@
 -- Created: 2024-01-01
 -- Description: Produtos iniciais para o catálogo
 
-INSERT OR REPLACE INTO products (
+REPLACE INTO products (
     name, slug, description, full_description, category, price_per_m3, 
     applications, image_url, gallery, certifications, specifications, 
     availability, origin_location, supplier, is_active, is_featured

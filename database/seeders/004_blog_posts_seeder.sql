@@ -2,7 +2,7 @@
 -- Created: 2024-01-01
 -- Description: Posts iniciais para o blog
 
-INSERT OR REPLACE INTO blog_posts (
+REPLACE INTO blog_posts (
     title, slug, excerpt, content, featured_image, category_id, author_id, 
     status, featured, views, published_at
 ) VALUES
@@ -17,7 +17,7 @@ INSERT OR REPLACE INTO blog_posts (
     'published',
     1,
     342,
-    datetime('now', '-7 days')
+    DATE_SUB(NOW(), INTERVAL 7 DAY)
 ),
 (
     'Tendências do Mercado Madeireiro em 2024',
@@ -30,7 +30,7 @@ INSERT OR REPLACE INTO blog_posts (
     'published',
     0,
     198,
-    datetime('now', '-3 days')
+    DATE_SUB(NOW(), INTERVAL 3 DAY)
 ),
 (
     'Técnicas Modernas de Secagem de Madeira',
@@ -43,5 +43,5 @@ INSERT OR REPLACE INTO blog_posts (
     'published',
     0,
     156,
-    datetime('now', '-1 day')
+    DATE_SUB(NOW(), INTERVAL 1 DAY)
 );

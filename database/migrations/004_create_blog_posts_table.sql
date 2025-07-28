@@ -26,10 +26,10 @@ CREATE TABLE IF NOT EXISTS blog_posts (
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_category_id ON blog_posts(category_id);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_author_id ON blog_posts(author_id);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_status ON blog_posts(status);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_featured ON blog_posts(featured);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_published_at ON blog_posts(published_at);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_views ON blog_posts(views);
+CREATE INDEX idx_blog_posts_slug ON blog_posts(slug);
+CREATE INDEX idx_blog_posts_category_id ON blog_posts(category_id);
+CREATE INDEX idx_blog_posts_author_id ON blog_posts(author_id);
+CREATE INDEX idx_blog_posts_status ON blog_posts(status);
+CREATE INDEX idx_blog_posts_featured ON blog_posts(featured);
+CREATE INDEX idx_blog_posts_published_at ON blog_posts(published_at);
+CREATE INDEX idx_blog_posts_views ON blog_posts(views);
