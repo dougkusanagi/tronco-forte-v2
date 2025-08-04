@@ -26,9 +26,9 @@ class CatalogoController
         $request = $this->app->request();
         $filtro_categoria = $request->query->categoria ?? 'todos';
         $filtro_aplicacao = $request->query->aplicacao ?? 'todas';
-        
+
         $produtos = $this->productModel->getFiltered($filtro_categoria, $filtro_aplicacao);
-        
+
         $data = [
             'page_title' => 'Catálogo de Madeiras - Tronco Forte',
             'meta_description' => 'Catálogo completo de madeiras legalizadas. Pinus, eucalipto, ipê, cumaru e mais espécies com certificação de origem.',
@@ -42,9 +42,9 @@ class CatalogoController
         // Set the content for the layout
         $content = $this->app->view()->fetch('catalogo/index', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with layout
         $this->app->render('layout', $data);
     }
@@ -60,11 +60,11 @@ class CatalogoController
         } else {
             $produto = $this->productModel->getBySlug($id);
         }
-        
+
         if (!$produto) {
             $this->app->halt(404, 'Produto não encontrado');
         }
-        
+
         $data = [
             'page_title' => $produto['nome'] . ' - Tronco Forte',
             'meta_description' => $produto['descricao_completa'],
@@ -75,7 +75,7 @@ class CatalogoController
         // Set the content for the layout
         $content = $this->app->view()->fetch('catalogo/produto', $data);
         $data['content'] = $content;
-        
+
         // Render with layout
         $this->app->render('layout', $data);
     }
@@ -90,14 +90,12 @@ class CatalogoController
         $aplicacao = $request->data->aplicacao ?? 'todas';
         $preco_min = (float) ($request->data->preco_min ?? 0);
         $preco_max = (float) ($request->data->preco_max ?? 9999);
-        
+
         $produtos = $this->productModel->getFiltered($categoria, $aplicacao, $preco_min, $preco_max);
-        
+
         $this->app->json([
             'produtos' => $produtos,
             'total' => count($produtos)
         ]);
     }
-
-
 }

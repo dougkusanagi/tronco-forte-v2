@@ -1,3 +1,9 @@
+<?php
+
+use app\utils\UrlHelper;
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -73,7 +79,7 @@
                 this.error = '';
                 
                 try {
-                    const response = await fetch('/admin/authenticate', {
+                    const response = await fetch('<?= UrlHelper::url('/admin/authenticate') ?>', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

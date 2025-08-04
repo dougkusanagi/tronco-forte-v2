@@ -25,14 +25,14 @@ class FornecedorController
         $request = $this->app->request();
         $regiao = $request->query->regiao ?? 'todas';
         $especialidade = $request->query->especialidade ?? 'todas';
-        
+
         $fornecedores = $this->fornecedorModel->getAtivos($regiao, $especialidade);
-        
+
         // Process data - fornecedores is already an array
-        $fornecedores = array_map(function($fornecedor) {
+        $fornecedores = array_map(function ($fornecedor) {
             return $this->fornecedorModel->processarDados($fornecedor);
         }, $fornecedores);
-        
+
         $data = [
             'page_title' => 'Fornecedores Parceiros - Tronco Forte',
             'meta_description' => 'Conecte-se com nossa rede de fornecedores especializados em madeira de qualidade. Encontre o parceiro ideal para seu projeto.',
@@ -46,9 +46,9 @@ class FornecedorController
         // Set the content for the layout
         $content = $this->app->view()->fetch('fornecedor/index', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with layout
         $this->app->render('layout', $data);
     }
@@ -59,14 +59,14 @@ class FornecedorController
     public function perfil(string $slug): void
     {
         $fornecedor = $this->fornecedorModel->getBySlug($slug);
-        
+
         if (!$fornecedor) {
             $this->app->halt(404, 'Fornecedor não encontrado');
         }
-        
+
         // Process data - fornecedor is already an array
         $fornecedor = $this->fornecedorModel->processarDados($fornecedor);
-        
+
         $data = [
             'page_title' => $fornecedor['nome'] . ' - Fornecedor Tronco Forte',
             'meta_description' => $fornecedor['descricao'],
@@ -76,9 +76,9 @@ class FornecedorController
         // Set the content for the layout
         $content = $this->app->view()->fetch('fornecedor/perfil', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with layout
         $this->app->render('layout', $data);
     }
@@ -92,9 +92,9 @@ class FornecedorController
         $regiao = $request->data->regiao ?? 'todas';
         $especialidade = $request->data->especialidade ?? 'todas';
         $termo = $request->data->termo ?? '';
-        
+
         $fornecedores = $this->fornecedorModel->buscar($regiao, $especialidade, $termo);
-        
+
         $this->app->json([
             'fornecedores' => $fornecedores,
             'total' => count($fornecedores)
@@ -109,15 +109,13 @@ class FornecedorController
         $request = $this->app->request();
         $fornecedor_id = (int) $request->data->fornecedor_id;
         $link_tipo = $request->data->link_tipo;
-        
+
         // Aqui você registraria o clique no banco de dados
         // Por enquanto, apenas retornamos sucesso
-        
+
         $this->app->json([
             'sucesso' => true,
             'mensagem' => 'Clique registrado com sucesso'
         ]);
     }
-
-
 }

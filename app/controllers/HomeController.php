@@ -85,9 +85,9 @@ class HomeController
         // Set the content for the layout
         $content = $this->app->view()->fetch('home/index', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with layout
         $this->app->render('layout', $data);
     }
@@ -98,15 +98,15 @@ class HomeController
     public function calcularVolume(): void
     {
         $request = $this->app->request();
-        
+
         $tipo_projeto = $request->data->tipo_projeto ?? '';
         $comprimento = (float) ($request->data->comprimento ?? 0);
         $largura = (float) ($request->data->largura ?? 0);
         $altura = (float) ($request->data->altura ?? 0);
-        
+
         $volume = 0;
         $recomendacoes = [];
-        
+
         switch ($tipo_projeto) {
             case 'deck':
                 $volume = ($comprimento * $largura * 0.025) * 1.1; // 2.5cm espessura + 10% desperdício
@@ -124,7 +124,7 @@ class HomeController
                 $volume = $comprimento * $largura * $altura;
                 $recomendacoes = ['Consulte nosso especialista'];
         }
-        
+
         $this->app->json([
             'volume_m3' => round($volume, 2),
             'tipo_projeto' => $tipo_projeto,
@@ -139,10 +139,10 @@ class HomeController
     public function quizMadeira(): void
     {
         $request = $this->app->request();
-        
+
         $respostas = $request->data->respostas ?? [];
         $recomendacao = $this->processarQuizMadeira($respostas);
-        
+
         $this->app->json($recomendacao);
     }
 
@@ -155,7 +155,7 @@ class HomeController
             'ipe' => 0,
             'cumaru' => 0
         ];
-        
+
         foreach ($respostas as $resposta) {
             switch ($resposta) {
                 case 'uso_externo':
@@ -180,9 +180,9 @@ class HomeController
                     break;
             }
         }
-        
+
         $madeira_recomendada = array_keys($pontuacao, max($pontuacao))[0];
-        
+
         $recomendacoes = [
             'pinus' => [
                 'nome' => 'Pinus Tratado',
@@ -209,7 +209,7 @@ class HomeController
                 'vantagens' => ['Alta durabilidade', 'Boa relação custo-benefício', 'Resistente']
             ]
         ];
-        
+
         return $recomendacoes[$madeira_recomendada];
     }
 
@@ -227,9 +227,9 @@ class HomeController
         // Set the content for the layout
         $content = $this->app->view()->fetch('home/contato', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with layout
         $this->app->render('layout', $data);
     }
@@ -248,9 +248,9 @@ class HomeController
         // Set the content for the layout
         $content = $this->app->view()->fetch('home/sobre', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with layout
         $this->app->render('layout', $data);
     }

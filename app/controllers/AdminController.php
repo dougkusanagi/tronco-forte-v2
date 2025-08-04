@@ -24,7 +24,7 @@ class AdminController
     {
         // Verificar autenticação (implementar depois)
         $this->verificarAutenticacao();
-        
+
         $data = [
             'page_title' => 'Dashboard Administrativo - Tronco Forte',
             'estatisticas' => $this->obterEstatisticas(),
@@ -35,9 +35,9 @@ class AdminController
         // Set the content for the admin layout
         $content = $this->app->view()->fetch('admin/dashboard', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with admin layout
         $this->app->render('admin_layout', $data);
     }
@@ -48,7 +48,7 @@ class AdminController
     public function fornecedores(): void
     {
         $this->verificarAutenticacao();
-        
+
         $data = [
             'page_title' => 'Gerenciar Fornecedores - Admin',
             'fornecedores' => $this->obterFornecedoresAdmin(),
@@ -58,9 +58,9 @@ class AdminController
         // Set the content for the admin layout
         $content = $this->app->view()->fetch('admin/fornecedores', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with admin layout
         $this->app->render('admin_layout', $data);
     }
@@ -71,7 +71,7 @@ class AdminController
     public function blog(): void
     {
         $this->verificarAutenticacao();
-        
+
         $data = [
             'page_title' => 'Gerenciar Blog - Admin',
             'artigos' => $this->obterArtigosAdmin(),
@@ -81,9 +81,9 @@ class AdminController
         // Set the content for the admin layout
         $content = $this->app->view()->fetch('admin/blog', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with admin layout
         $this->app->render('admin_layout', $data);
     }
@@ -94,26 +94,25 @@ class AdminController
     public function produtos(): void
     {
         $this->verificarAutenticacao();
-        
+
         try {
             $produtos = $this->obterProdutosAdmin();
             $categorias = $this->obterCategoriasAdmin();
-            
+
             $data = [
                 'page_title' => 'Gerenciar Produtos - Admin',
                 'produtos' => $produtos,
                 'categorias' => $categorias
             ];
-            
+
             // Set the content for the admin layout
             $content = $this->app->view()->fetch('admin/produtos', $data);
             $data['content'] = $content;
-            $data['base_path'] = UrlHelper::getBasePath();
+            $data['base_path'] = UrlHelper::url();
             $data['url_helper'] = UrlHelper::class;
-            
+
             // Render with admin layout
             $this->app->render('admin_layout', $data);
-            
         } catch (Exception $e) {
             error_log('Error in produtos method: ' . $e->getMessage());
             Flight::halt(500, 'Internal Server Error: ' . $e->getMessage());
@@ -128,7 +127,7 @@ class AdminController
     public function relatorios(): void
     {
         $this->verificarAutenticacao();
-        
+
         $data = [
             'page_title' => 'Relatórios - Admin',
             'metricas_site' => $this->obterMetricasSite(),
@@ -139,9 +138,9 @@ class AdminController
         // Set the content for the admin layout
         $content = $this->app->view()->fetch('admin/relatorios', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with admin layout
         $this->app->render('admin_layout', $data);
     }
@@ -152,7 +151,7 @@ class AdminController
     public function configuracoes(): void
     {
         $this->verificarAutenticacao();
-        
+
         $data = [
             'page_title' => 'Configurações - Admin',
             'configuracoes_site' => $this->obterConfiguracoesSite(),
@@ -162,9 +161,9 @@ class AdminController
         // Set the content for the admin layout
         $content = $this->app->view()->fetch('admin/configuracoes', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
-        
+
         // Render with admin layout
         $this->app->render('admin_layout', $data);
     }
@@ -175,26 +174,26 @@ class AdminController
     public function salvarProduto(): void
     {
         $this->verificarAutenticacao();
-        
+
         $request = $this->app->request();
         $input = $request->getBody();
         $data = json_decode($input, true);
-        
+
         if (!$data) {
             $data = (object)$request->data->getData();
         } else {
             $data = (object)$data;
         }
-        
+
         try {
             $db = Flight::db();
-            
+
             // Gerar slug a partir do nome
             $slug = $this->gerarSlug($data->nome);
-            
+
             // Mapear disponibilidade
             $availability = $this->mapAvailability($data->disponibilidade ?? 'disponivel');
-            
+
             if (isset($data->id) && !empty($data->id)) {
                 // Update
                 $stmt = $db->prepare("
@@ -210,13 +209,13 @@ class AdminController
                     WHERE id = ?
                 ");
                 $stmt->execute([
-                    $data->nome, 
+                    $data->nome,
                     $slug,
-                    $data->categoria, 
-                    (float)$data->preco, 
-                    $data->descricao ?? '', 
-                    $data->especificacoes ?? '', 
-                    $availability, 
+                    $data->categoria,
+                    (float)$data->preco,
+                    $data->descricao ?? '',
+                    $data->especificacoes ?? '',
+                    $availability,
                     $data->id
                 ]);
                 $message = 'Produto atualizado com sucesso!';
@@ -229,24 +228,24 @@ class AdminController
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                 ");
                 $stmt->execute([
-                    $data->nome, 
+                    $data->nome,
                     $slug,
-                    $data->categoria, 
-                    (float)$data->preco, 
-                    $data->descricao ?? '', 
-                    $data->especificacoes ?? '', 
+                    $data->categoria,
+                    (float)$data->preco,
+                    $data->descricao ?? '',
+                    $data->especificacoes ?? '',
                     $availability
                 ]);
                 $message = 'Produto criado com sucesso!';
             }
-            
+
             $this->app->json(['success' => true, 'message' => $message]);
         } catch (Exception $e) {
             error_log('Erro ao salvar produto: ' . $e->getMessage());
             $this->app->json(['success' => false, 'message' => 'Erro ao salvar produto: ' . $e->getMessage()]);
         }
     }
-    
+
     /**
      * Gerar slug a partir do nome
      */
@@ -258,7 +257,7 @@ class AdminController
         $slug = trim($slug, '-');
         return $slug;
     }
-    
+
     /**
      * Mapear disponibilidade da view para o banco
      */
@@ -266,32 +265,32 @@ class AdminController
     {
         $map = [
             'disponivel' => 'in_stock',
-            'sob-consulta' => 'on_demand', 
+            'sob-consulta' => 'on_demand',
             'esgotado' => 'out_of_stock'
         ];
-        
+
         return $map[$disponibilidade] ?? 'in_stock';
     }
-    
+
     public function excluirProduto(): void
     {
         $this->verificarAutenticacao();
-        
+
         $request = $this->app->request();
         $input = $request->getBody();
         $data = json_decode($input, true);
-        
+
         if (!$data) {
             $id = $request->data->id ?? null;
         } else {
             $id = $data['id'] ?? null;
         }
-        
+
         if (!$id) {
             $this->app->json(['success' => false, 'message' => 'ID do produto não fornecido']);
             return;
         }
-        
+
         try {
             $db = Flight::db();
             $stmt = $db->prepare("DELETE FROM products WHERE id = ?");
@@ -309,7 +308,7 @@ class AdminController
     public function salvarFornecedor(): void
     {
         $this->verificarAutenticacao();
-        
+
         $request = $this->app->request();
         $dados = [
             'nome' => $request->data->nome,
@@ -320,9 +319,9 @@ class AdminController
             'especialidades' => $request->data->especialidades,
             'links' => $request->data->links
         ];
-        
+
         // Aqui você salvaria no banco de dados
-        
+
         $this->app->json([
             'sucesso' => true,
             'mensagem' => 'Fornecedor salvo com sucesso',
@@ -336,22 +335,22 @@ class AdminController
     public function salvarArtigo(): void
     {
         $this->verificarAutenticacao();
-        
+
         $request = $this->app->request();
         $data = $request->data;
-        
+
         try {
             $db = Flight::db();
-            
+
             // Validate required fields
             if (empty($data->title) || empty($data->content)) {
                 $this->app->json(['success' => false, 'message' => 'Título e conteúdo são obrigatórios']);
                 return;
             }
-            
+
             // Generate slug from title
             $slug = $this->generateSlug($data->title);
-            
+
             if (isset($data->id) && !empty($data->id)) {
                 // Update existing article
                 $stmt = $db->prepare("
@@ -391,7 +390,7 @@ class AdminController
                 ]);
                 $message = 'Artigo criado com sucesso!';
             }
-            
+
             $this->app->json(['success' => true, 'message' => $message]);
         } catch (Exception $e) {
             error_log('Erro ao salvar artigo: ' . $e->getMessage());
@@ -405,7 +404,7 @@ class AdminController
     public function dadosDashboard(): void
     {
         $this->verificarAutenticacao();
-        
+
         $this->app->json([
             'estatisticas' => $this->obterEstatisticas(),
             'grafico_vendas' => $this->obterDadosGraficoVendas(),
@@ -424,10 +423,10 @@ class AdminController
             $this->app->redirect('/admin/dashboard');
             return;
         }
-        
+
         $this->app->render('admin/login');
     }
-    
+
     /**
      * Processar autenticação
      */
@@ -436,11 +435,11 @@ class AdminController
         $request = $this->app->request();
         $username = $request->data->username ?? '';
         $password = $request->data->password ?? '';
-        
+
         // Credenciais padrão
         $defaultUsername = 'admin';
         $defaultPassword = 'admin123';
-        
+
         if ($username === $defaultUsername && $password === $defaultPassword) {
             // Iniciar sessão
             if (session_status() === PHP_SESSION_NONE) {
@@ -449,7 +448,7 @@ class AdminController
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin_user'] = $username;
             $_SESSION['admin_login_time'] = time();
-            
+
             $this->app->json([
                 'success' => true,
                 'message' => 'Login realizado com sucesso'
@@ -461,7 +460,7 @@ class AdminController
             ]);
         }
     }
-    
+
     /**
      * Logout
      */
@@ -470,20 +469,20 @@ class AdminController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        
+
         // Limpar sessão
         unset($_SESSION['admin_logged_in']);
         unset($_SESSION['admin_user']);
         unset($_SESSION['admin_login_time']);
-        
+
         // Destruir sessão se estiver vazia
         if (empty($_SESSION)) {
             session_destroy();
         }
-        
+
         $this->app->redirect('/admin/login');
     }
-    
+
     /**
      * Verificar se está autenticado
      */
@@ -492,10 +491,10 @@ class AdminController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        
+
         return isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
     }
-    
+
     private function verificarAutenticacao(): void
     {
         if (!$this->estaAutenticado()) {
@@ -507,17 +506,17 @@ class AdminController
     {
         try {
             $db = Flight::db();
-            
+
             // Contar fornecedores
             $stmt = $db->prepare("SELECT COUNT(*) as total FROM fornecedores");
             $stmt->execute();
             $totalFornecedores = $stmt->fetch()['total'];
-            
+
             // Contar artigos do blog
             $stmt = $db->prepare("SELECT COUNT(*) as total FROM blog_posts");
             $stmt->execute();
             $totalArtigos = $stmt->fetch()['total'];
-            
+
             return [
                 'total_produtos' => 156, // Manter valor fixo por enquanto
                 'total_fornecedores' => $totalFornecedores,
@@ -687,7 +686,7 @@ class AdminController
             $stmt = $db->prepare("SELECT DISTINCT category FROM products WHERE is_active = 1 ORDER BY category");
             $stmt->execute();
             $categorias = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            
+
             return $categorias ?: ['Estrutural', 'Acabamento', 'Deck', 'Madeiras Nobres'];
         } catch (Exception $e) {
             error_log('Erro ao obter categorias admin: ' . $e->getMessage());
@@ -710,15 +709,15 @@ class AdminController
     {
         try {
             $db = Flight::db();
-            
+
             // Get total blog post views
             $stmt = $db->prepare("SELECT SUM(views) as total_views FROM blog_posts");
             $stmt->execute();
             $totalViews = $stmt->fetchColumn() ?: 0;
-            
+
             // Since fornecedores table doesn't have total_cliques, we'll use a default value
             $totalClicks = 0;
-            
+
             // Get most viewed blog posts
             $stmt = $db->prepare("
                 SELECT 
@@ -731,18 +730,18 @@ class AdminController
             ");
             $stmt->execute();
             $paginasPopulares = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+
             // Add default pages if not enough data
             if (count($paginasPopulares) < 3) {
                 $defaultPages = [
                     ['pagina' => '/fornecedores', 'visualizacoes' => $totalClicks],
-                ['pagina' => '/', 'visualizacoes' => 500],
-                ['pagina' => '/blog', 'visualizacoes' => $totalViews]
+                    ['pagina' => '/', 'visualizacoes' => 500],
+                    ['pagina' => '/blog', 'visualizacoes' => $totalViews]
                 ];
                 $paginasPopulares = array_merge($paginasPopulares, array_slice($defaultPages, count($paginasPopulares)));
                 $paginasPopulares = array_slice($paginasPopulares, 0, 3);
             }
-            
+
             return [
                 'pageviews_mes' => $totalViews + $totalClicks + 1000, // Add base traffic
                 'usuarios_unicos' => intval(($totalViews + $totalClicks) * 0.3), // Estimate unique users
@@ -771,7 +770,7 @@ class AdminController
     {
         try {
             $db = Flight::db();
-            
+
             // Get most viewed blog posts as proxy for most requested products
             $stmt = $db->prepare("
                 SELECT 
@@ -784,7 +783,7 @@ class AdminController
             ");
             $stmt->execute();
             $produtosMaisCotados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+
             // Add default products if not enough data
             if (count($produtosMaisCotados) < 3) {
                 $defaultProducts = [
@@ -795,11 +794,11 @@ class AdminController
                 $produtosMaisCotados = array_merge($produtosMaisCotados, array_slice($defaultProducts, count($produtosMaisCotados)));
                 $produtosMaisCotados = array_slice($produtosMaisCotados, 0, 3);
             }
-            
+
             // Calculate estimates based on real data
             $totalCotacoes = array_sum(array_column($produtosMaisCotados, 'cotacoes'));
             $orcamentosMes = max($totalCotacoes, 20); // Minimum 20 quotes
-            
+
             return [
                 'orcamentos_mes' => $orcamentosMes,
                 'conversao_orcamentos' => 7.2,
@@ -826,10 +825,10 @@ class AdminController
     {
         try {
             $db = Flight::db();
-            
+
             // Since fornecedores table doesn't have total_cliques, we'll use default values
             $totalCliques = 0;
-            
+
             // Get most recent supplier as proxy for most accessed
             $stmt = $db->prepare("
                 SELECT nome 
@@ -839,7 +838,7 @@ class AdminController
             ");
             $stmt->execute();
             $fornecedorMaisAcessado = $stmt->fetchColumn() ?: 'Nenhum fornecedor';
-            
+
             // Get most common region
             $stmt = $db->prepare("
                 SELECT regiao, COUNT(*) as total_count
@@ -851,7 +850,7 @@ class AdminController
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             $regiaoMaisAtiva = $result ? ucfirst($result['regiao']) : 'Sudeste';
-            
+
             return [
                 'total_cliques' => $totalCliques,
                 'fornecedor_mais_acessado' => $fornecedorMaisAcessado,
@@ -917,7 +916,7 @@ class AdminController
     public function editarArtigo(int $id): void
     {
         $this->verificarAutenticacao();
-        
+
         try {
             $db = Flight::db();
             $stmt = $db->prepare("
@@ -928,74 +927,74 @@ class AdminController
             ");
             $stmt->execute([$id]);
             $artigo = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             if (!$artigo) {
                 $this->app->halt(404, 'Artigo não encontrado');
             }
-            
+
             $categorias = $this->obterCategoriasBlogAdmin();
-            
+
             $data = [
                 'page_title' => 'Editar Artigo - Admin',
                 'artigo' => $artigo,
                 'categorias' => $categorias
             ];
-            
+
             $content = $this->app->view()->fetch('admin/blog-form', $data);
             $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
-        $data['url_helper'] = UrlHelper::class;
+            $data['base_path'] = UrlHelper::url();
+            $data['url_helper'] = UrlHelper::class;
             $this->app->render('admin_layout', $data);
         } catch (Exception $e) {
             error_log('Erro ao carregar artigo para edição: ' . $e->getMessage());
             $this->app->halt(500, 'Erro interno do servidor');
         }
     }
-    
+
     /**
      * Novo artigo do blog
      */
     public function novoArtigo(): void
     {
         $this->verificarAutenticacao();
-        
+
         $categorias = $this->obterCategoriasBlogAdmin();
-        
+
         $data = [
             'page_title' => 'Novo Artigo - Admin',
             'artigo' => null,
             'categorias' => $categorias
         ];
-        
+
         $content = $this->app->view()->fetch('admin/blog-form', $data);
         $data['content'] = $content;
-        $data['base_path'] = UrlHelper::getBasePath();
+        $data['base_path'] = UrlHelper::url();
         $data['url_helper'] = UrlHelper::class;
         $this->app->render('admin_layout', $data);
     }
-    
+
     /**
      * Excluir artigo do blog
      */
     public function excluirArtigo(): void
     {
         $this->verificarAutenticacao();
-        
+
         $request = $this->app->request();
         $id = $request->data->id;
-        
+
         try {
             $db = Flight::db();
             $stmt = $db->prepare("DELETE FROM blog_posts WHERE id = ?");
             $stmt->execute([$id]);
-            
+
             $this->app->json(['success' => true, 'message' => 'Artigo excluído com sucesso!']);
         } catch (Exception $e) {
             error_log('Erro ao excluir artigo: ' . $e->getMessage());
             $this->app->json(['success' => false, 'message' => 'Erro ao excluir artigo']);
         }
     }
-    
+
     /**
      * Gerar slug único para artigo
      */
@@ -1006,12 +1005,12 @@ class AdminController
         $slug = preg_replace('/[^a-z0-9-]/', '-', $slug);
         $slug = preg_replace('/-+/', '-', $slug);
         $slug = trim($slug, '-');
-        
+
         // Ensure uniqueness
         $db = Flight::db();
         $originalSlug = $slug;
         $counter = 1;
-        
+
         while (true) {
             $stmt = $db->prepare("SELECT COUNT(*) FROM blog_posts WHERE slug = ?");
             $stmt->execute([$slug]);
@@ -1021,7 +1020,7 @@ class AdminController
             $slug = $originalSlug . '-' . $counter;
             $counter++;
         }
-        
+
         return $slug;
     }
 
@@ -1039,7 +1038,7 @@ class AdminController
             ");
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+
             // Se não houver dados suficientes, adicionar dados padrão
             if (count($result) < 5) {
                 $defaultData = [
@@ -1049,12 +1048,12 @@ class AdminController
                     ['nome' => 'Cumaru', 'visualizacoes' => 540],
                     ['nome' => 'Jatobá', 'visualizacoes' => 420]
                 ];
-                
+
                 // Mesclar dados reais com dados padrão
                 $result = array_merge($result, array_slice($defaultData, count($result)));
                 $result = array_slice($result, 0, 5);
             }
-            
+
             return $result;
         } catch (Exception $e) {
             error_log('Erro ao obter top produtos: ' . $e->getMessage());
@@ -1069,4 +1068,3 @@ class AdminController
         }
     }
 }
-

@@ -10,17 +10,17 @@ date_default_timezone_set('America/New_York');
 error_reporting(E_ALL);
 
 // Set the default character encoding
-if(function_exists('mb_internal_encoding') === true) {
+if (function_exists('mb_internal_encoding') === true) {
 	mb_internal_encoding('UTF-8');
 }
 
 // Set the default locale
-if(function_exists('setlocale') === true) {
-	setlocale(LC_ALL, 'en_US.UTF-8');
+if (function_exists('setlocale') === true) {
+	setlocale(LC_ALL, 'pt_BR.UTF-8');
 }
 
 // Get the $app var to use below
-if(empty($app)) {
+if (empty($app)) {
 	$app = Flight::app();
 }
 
@@ -71,11 +71,11 @@ return [
 		'url' => 'http://localhost:8000', // Change this to your domain URL
 		'base_path' => '', // Set to subdirectory if app is in a subfolder (e.g., '/myapp')
 	],
-	
+
 	'database' => [
 		// Database type: 'mysql' or 'sqlite'
 		'type' => 'sqlite', // Change to 'mysql' for MySQL
-		
+
 		// MySQL configuration (used when type = 'mysql')
 		'mysql' => [
 			'host' => 'localhost',
@@ -84,7 +84,7 @@ return [
 			'password' => 'your_password',
 			'charset' => 'utf8mb4'
 		],
-		
+
 		// SQLite configuration (used when type = 'sqlite')
 		'sqlite' => [
 			'file_path' => __DIR__ . $ds . '..' . $ds . '..' . $ds . 'database.sqlite'
