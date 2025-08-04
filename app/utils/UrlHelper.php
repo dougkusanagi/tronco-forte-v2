@@ -45,7 +45,7 @@ class UrlHelper
             return $url;
         }
 
-        return rtrim($config['app']['url'], '/') . '/' . ltrim($path, '/');
+        return $url . '/' . ltrim($path, '/');
     }
 
     /**
