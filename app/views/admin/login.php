@@ -93,7 +93,7 @@ use app\utils\UrlHelper;
                     const data = await response.json();
                     
                     if (data.success) {
-                        window.location.href = '/admin/dashboard';
+                        window.location.href = <?= UrlHelper::url('/admin/dashboard'); ?>;
                     } else {
                         this.error = data.message || 'Credenciais inválidas';
                     }

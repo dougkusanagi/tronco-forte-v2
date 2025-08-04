@@ -1,3 +1,8 @@
+<?php
+
+use app\utils\UrlHelper;
+?>
+
 <div class="bg-gray-50 min-h-screen py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
@@ -23,15 +28,16 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
-                    <input type="text" x-model="busca" placeholder="Título do artigo..." 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                    <input type="text" x-model="busca" placeholder="Título do artigo..."
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
                     <select x-model="categoria" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
                         <option value="">Todas as categorias</option>
-                        <?php foreach ($categorias_blog as $categoria): ?>
-                        <option value="<?= $categoria ?>"><?= $categoria ?></option>
+                        <?php
+                        foreach ($categorias_blog as $categoria): ?>
+                            <option value="<?= $categoria ?>"><?= $categoria ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -69,46 +75,45 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php foreach ($artigos as $artigo): ?>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-wood-brown flex items-center justify-center">
-                                            <i data-lucide="file-text" class="w-5 h-5 text-white"></i>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <div class="h-10 w-10 rounded-full bg-wood-brown flex items-center justify-center">
+                                                <i data-lucide="file-text" class="w-5 h-5 text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900 max-w-xs truncate"><?= htmlspecialchars($artigo['titulo']) ?></div>
+                                            <div class="text-sm text-gray-500">Por <?= htmlspecialchars($artigo['autor']) ?></div>
                                         </div>
                                     </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900 max-w-xs truncate"><?= htmlspecialchars($artigo['titulo']) ?></div>
-                                        <div class="text-sm text-gray-500">Por <?= htmlspecialchars($artigo['autor']) ?></div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= htmlspecialchars($artigo['categoria']) ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                    <?= $artigo['status'] === 'Publicado' ? 'bg-green-100 text-green-800' : ($artigo['status'] === 'Rascunho' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800') ?>">
+                                        <?= htmlspecialchars($artigo['status']) ?>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= number_format($artigo['visualizacoes']) ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <?= $artigo['data_publicacao'] ? date('d/m/Y', strtotime($artigo['data_publicacao'])) : '-' ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <a href="/admin/blog/editar/<?= $artigo['id'] ?>" class="text-wood-brown hover:text-wood-dark" title="Editar">
+                                            <i data-lucide="edit" class="w-4 h-4"></i>
+                                        </a>
+                                        <a href="/blog/<?= $artigo['slug'] ?? '#' ?>" target="_blank" class="text-blue-600 hover:text-blue-900" title="Visualizar">
+                                            <i data-lucide="eye" class="w-4 h-4"></i>
+                                        </a>
+                                        <button onclick="excluirArtigo(<?= $artigo['id'] ?>, '<?= htmlspecialchars($artigo['titulo'], ENT_QUOTES) ?>')" class="text-red-600 hover:text-red-900" title="Excluir">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= htmlspecialchars($artigo['categoria']) ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
-                                    <?= $artigo['status'] === 'Publicado' ? 'bg-green-100 text-green-800' : 
-                                        ($artigo['status'] === 'Rascunho' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800') ?>">
-                                    <?= htmlspecialchars($artigo['status']) ?>
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= number_format($artigo['visualizacoes']) ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <?= $artigo['data_publicacao'] ? date('d/m/Y', strtotime($artigo['data_publicacao'])) : '-' ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex space-x-2">
-                                    <a href="/admin/blog/editar/<?= $artigo['id'] ?>" class="text-wood-brown hover:text-wood-dark" title="Editar">
-                                        <i data-lucide="edit" class="w-4 h-4"></i>
-                                    </a>
-                                    <a href="/blog/<?= $artigo['slug'] ?? '#' ?>" target="_blank" class="text-blue-600 hover:text-blue-900" title="Visualizar">
-                                        <i data-lucide="eye" class="w-4 h-4"></i>
-                                    </a>
-                                    <button onclick="excluirArtigo(<?= $artigo['id'] ?>, '<?= htmlspecialchars($artigo['titulo'], ENT_QUOTES) ?>')" class="text-red-600 hover:text-red-900" title="Excluir">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -165,24 +170,26 @@
 <script>
     // Initialize Lucide icons
     lucide.createIcons();
-    
+
     // Function to delete article
     async function excluirArtigo(id, titulo) {
         if (!confirm(`Tem certeza que deseja excluir o artigo "${titulo}"? Esta ação não pode ser desfeita.`)) {
             return;
         }
-        
+
         try {
-            const response = await fetch('/api/admin/artigo', {
+            const response = await fetch(<?= UrlHelper::url('/api/admin/artigo') ?>, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify({
+                    id: id
+                })
             });
-            
+
             const result = await response.json();
-            
+
             if (result.success) {
                 alert(result.message);
                 location.reload(); // Reload the page to update the list

@@ -1,105 +1,71 @@
+<?php
+
+use app\utils\UrlHelper;
+?>
+
 <script>
-document.addEventListener('alpine:init', () => {
-    Alpine.data('produtosManager', () => ({
-        produtos: <?= json_encode($produtos) ?>,
-        modalNovoProduto: false,
-        modalEditarProduto: false,
-        produtoSelecionado: null,
-        novoProduto: {
-            nome: '',
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('produtosManager', () => ({
+            produtos: <?= json_encode($produtos) ?>,
+            modalNovoProduto: false,
+            modalEditarProduto: false,
+            produtoSelecionado: null,
+            novoProduto: {
+                nome: '',
+                categoria: '',
+                preco: '',
+                descricao: '',
+                especificacoes: '',
+                disponibilidade: 'in_stock'
+            },
+            busca: '',
             categoria: '',
-            preco: '',
-            descricao: '',
-            especificacoes: '',
-            disponibilidade: 'in_stock'
-        },
-        busca: '',
-        categoria: '',
-        status: '',
-        
-        get produtosFiltrados() {
-            return this.produtos.filter(produto => {
-                const matchBusca = !this.busca || produto.name.toLowerCase().includes(this.busca.toLowerCase());
-                const matchCategoria = !this.categoria || produto.category.toLowerCase().includes(this.categoria.toLowerCase());
-                const matchStatus = !this.status || this.getStatusDisplay(produto).toLowerCase().includes(this.status.toLowerCase());
-                return matchBusca && matchCategoria && matchStatus;
-            });
-        },
-        
-        getStatusDisplay(produto) {
-            const statusMap = {
-                'in_stock': 'Disponível',
-                'on_demand': 'Sob Consulta',
-                'out_of_stock': 'Esgotado'
-            };
-            return statusMap[produto.availability] || 'Disponível';
-        },
-        
-        getAvailabilityDisplay(produto) {
-            return produto.is_active ? 'Ativo' : 'Inativo';
-        },
-        
-        editarProduto(produto) {
-            this.produtoSelecionado = {
-                id: produto.id,
-                nome: produto.name,
-                categoria: produto.category,
-                preco: produto.price_per_m3,
-                descricao: produto.description,
-                especificacoes: produto.full_description,
-                disponibilidade: produto.availability
-            };
-            this.modalEditarProduto = true;
-        },
-        
-        async salvarProduto() {
-            try {
-                const response = await fetch('/admin/produtos/salvar', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(this.novoProduto)
+            status: '',
+
+            get produtosFiltrados() {
+                return this.produtos.filter(produto => {
+                    const matchBusca = !this.busca || produto.name.toLowerCase().includes(this.busca.toLowerCase());
+                    const matchCategoria = !this.categoria || produto.category.toLowerCase().includes(this.categoria.toLowerCase());
+                    const matchStatus = !this.status || this.getStatusDisplay(produto).toLowerCase().includes(this.status.toLowerCase());
+                    return matchBusca && matchCategoria && matchStatus;
                 });
-                const result = await response.json();
-                if (result.success) {
-                    alert(result.message);
-                    location.reload();
-                } else {
-                    alert('Erro: ' + result.message);
-                }
-            } catch (error) {
-                alert('Erro ao salvar produto');
-            }
-            this.modalNovoProduto = false;
-        },
-        
-        async atualizarProduto() {
-            try {
-                const response = await fetch('/admin/produtos/salvar', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(this.produtoSelecionado)
-                });
-                const result = await response.json();
-                if (result.success) {
-                    alert(result.message);
-                    location.reload();
-                } else {
-                    alert('Erro: ' + result.message);
-                }
-            } catch (error) {
-                alert('Erro ao atualizar produto');
-            }
-            this.modalEditarProduto = false;
-        },
-        
-        async excluirProduto(id) {
-            if (confirm('Tem certeza que deseja excluir este produto?')) {
+            },
+
+            getStatusDisplay(produto) {
+                const statusMap = {
+                    'in_stock': 'Disponível',
+                    'on_demand': 'Sob Consulta',
+                    'out_of_stock': 'Esgotado'
+                };
+                return statusMap[produto.availability] || 'Disponível';
+            },
+
+            getAvailabilityDisplay(produto) {
+                return produto.is_active ? 'Ativo' : 'Inativo';
+            },
+
+            editarProduto(produto) {
+                this.produtoSelecionado = {
+                    id: produto.id,
+                    nome: produto.name,
+                    categoria: produto.category,
+                    preco: produto.price_per_m3,
+                    descricao: produto.description,
+                    especificacoes: produto.full_description,
+                    disponibilidade: produto.availability
+                };
+                this.modalEditarProduto = true;
+            },
+
+            async salvarProduto() {
                 try {
-                    const response = await fetch('/admin/produtos/excluir', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({id: id})
-                });
+                    const response = await fetch(<?= UrlHelper::url('/admin/produtos/salvar') ?>, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(this.novoProduto)
+                    });
                     const result = await response.json();
                     if (result.success) {
                         alert(result.message);
@@ -108,12 +74,59 @@ document.addEventListener('alpine:init', () => {
                         alert('Erro: ' + result.message);
                     }
                 } catch (error) {
-                    alert('Erro ao excluir produto');
+                    alert('Erro ao salvar produto');
+                }
+                this.modalNovoProduto = false;
+            },
+
+            async atualizarProduto() {
+                try {
+                    const response = await fetch(<?= UrlHelper::url('/admin/produtos/salvar') ?>, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(this.produtoSelecionado)
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        alert(result.message);
+                        location.reload();
+                    } else {
+                        alert('Erro: ' + result.message);
+                    }
+                } catch (error) {
+                    alert('Erro ao atualizar produto');
+                }
+                this.modalEditarProduto = false;
+            },
+
+            async excluirProduto(id) {
+                if (confirm('Tem certeza que deseja excluir este produto?')) {
+                    try {
+                        const response = await fetch(<?= UrlHelper::url('/admin/produtos/excluir') ?>, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: id
+                            })
+                        });
+                        const result = await response.json();
+                        if (result.success) {
+                            alert(result.message);
+                            location.reload();
+                        } else {
+                            alert('Erro: ' + result.message);
+                        }
+                    } catch (error) {
+                        alert('Erro ao excluir produto');
+                    }
                 }
             }
-        }
-    }));
-});
+        }));
+    });
 </script>
 
 <div class="bg-gray-50 min-h-screen py-8" x-data="produtosManager()">
@@ -125,8 +138,8 @@ document.addEventListener('alpine:init', () => {
                     <h1 class="text-2xl font-bold text-gray-900">Gerenciar Produtos</h1>
                     <p class="text-gray-600 mt-1">Adicione, edite e gerencie os produtos do catálogo</p>
                 </div>
-                <button class="bg-wood-brown text-white px-6 py-3 rounded-lg hover:bg-wood-dark transition-colors font-medium" 
-                        @click="modalNovoProduto = true">
+                <button class="bg-wood-brown text-white px-6 py-3 rounded-lg hover:bg-wood-dark transition-colors font-medium"
+                    @click="modalNovoProduto = true">
                     <i data-lucide="plus" class="w-4 h-4 inline mr-2"></i>
                     Novo Produto
                 </button>
@@ -138,15 +151,15 @@ document.addEventListener('alpine:init', () => {
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Buscar Produtos</label>
-                    <input type="text" x-model="busca" placeholder="Nome, código ou descrição..." 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                    <input type="text" x-model="busca" placeholder="Nome, código ou descrição..."
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
                     <select x-model="categoria" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
                         <option value="">Todas as Categorias</option>
                         <?php foreach ($categorias as $cat): ?>
-                        <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
+                            <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -161,8 +174,8 @@ document.addEventListener('alpine:init', () => {
                     </select>
                 </div>
                 <div class="flex items-end">
-                    <button @click="busca = ''; categoria = ''; status = '';" 
-                            class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors">
+                    <button @click="busca = ''; categoria = ''; status = '';"
+                        class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors">
                         Limpar Filtros
                     </button>
                 </div>
@@ -212,12 +225,12 @@ document.addEventListener('alpine:init', () => {
                                         <a x-bind:href="'/catalogo/produto/' + produto.slug" class="text-blue-600 hover:text-blue-900" title="Ver">
                                             <i data-lucide="eye" class="w-4 h-4"></i>
                                         </a>
-                                        <button @click="editarProduto(produto)" 
-                                                class="text-wood-brown hover:text-wood-dark" title="Editar">
+                                        <button @click="editarProduto(produto)"
+                                            class="text-wood-brown hover:text-wood-dark" title="Editar">
                                             <i data-lucide="edit" class="w-4 h-4"></i>
                                         </button>
-                                        <button @click="excluirProduto(produto.id)" 
-                                                class="text-red-600 hover:text-red-900" title="Excluir">
+                                        <button @click="excluirProduto(produto.id)"
+                                            class="text-red-600 hover:text-red-900" title="Excluir">
                                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                                         </button>
                                     </div>
@@ -246,62 +259,62 @@ document.addEventListener('alpine:init', () => {
                             <i data-lucide="x" class="w-6 h-6"></i>
                         </button>
                     </div>
-                    
+
                     <form @submit.prevent="salvarProduto()" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label>
-                                <input type="text" x-model="novoProduto.nome" required 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                                <input type="text" x-model="novoProduto.nome" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
-                                <select x-model="novoProduto.categoria" required 
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                                <select x-model="novoProduto.categoria" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
                                     <option value="">Selecione uma categoria</option>
                                     <?php foreach ($categorias as $cat): ?>
-                                    <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
+                                        <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Preço por m³ (R$)</label>
-                                <input type="number" x-model="novoProduto.preco" step="0.01" required 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                                <input type="number" x-model="novoProduto.preco" step="0.01" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Disponibilidade</label>
-                                <select x-model="novoProduto.disponibilidade" 
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                                <select x-model="novoProduto.disponibilidade"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
                                     <option value="in_stock">Disponível</option>
                                     <option value="on_demand">Sob Consulta</option>
                                     <option value="out_of_stock">Esgotado</option>
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
-                            <textarea x-model="novoProduto.descricao" rows="3" 
-                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent"></textarea>
+                            <textarea x-model="novoProduto.descricao" rows="3"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent"></textarea>
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Especificações Técnicas</label>
-                            <textarea x-model="novoProduto.especificacoes" rows="4" 
-                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent"></textarea>
+                            <textarea x-model="novoProduto.especificacoes" rows="4"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent"></textarea>
                         </div>
-                        
+
                         <div class="flex justify-end space-x-3 pt-4">
-                            <button type="button" @click="modalNovoProduto = false" 
-                                    class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                            <button type="button" @click="modalNovoProduto = false"
+                                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
                                 Cancelar
                             </button>
-                            <button type="submit" 
-                                    class="px-4 py-2 bg-wood-brown text-white rounded-lg hover:bg-wood-dark transition-colors">
+                            <button type="submit"
+                                class="px-4 py-2 bg-wood-brown text-white rounded-lg hover:bg-wood-dark transition-colors">
                                 Salvar Produto
                             </button>
                         </div>
@@ -319,68 +332,68 @@ document.addEventListener('alpine:init', () => {
                             <i data-lucide="x" class="w-6 h-6"></i>
                         </button>
                     </div>
-                    
+
                     <template x-if="produtoSelecionado">
-                    <form @submit.prevent="atualizarProduto()" class="space-y-4">
-                        <input type="hidden" x-model="produtoSelecionado.id">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label>
-                                <input type="text" x-model="produtoSelecionado.nome" required 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
-                                <select x-model="produtoSelecionado.categoria" required 
+                        <form @submit.prevent="atualizarProduto()" class="space-y-4">
+                            <input type="hidden" x-model="produtoSelecionado.id">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label>
+                                    <input type="text" x-model="produtoSelecionado.nome" required
                                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
-                                    <option value="">Selecione uma categoria</option>
-                                    <?php foreach ($categorias as $cat): ?>
-                                    <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Preço por m³ (R$)</label>
-                                <input type="number" x-model="produtoSelecionado.preco" step="0.01" required 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Disponibilidade</label>
-                                <select x-model="produtoSelecionado.disponibilidade" 
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                                    <select x-model="produtoSelecionado.categoria" required
                                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
-                                    <option value="in_stock">Disponível</option>
-                                    <option value="on_demand">Sob Consulta</option>
-                                    <option value="out_of_stock">Esgotado</option>
-                                </select>
+                                        <option value="">Selecione uma categoria</option>
+                                        <?php foreach ($categorias as $cat): ?>
+                                            <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
-                            <textarea x-model="produtoSelecionado.descricao" rows="3" 
-                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent"></textarea>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Especificações Técnicas</label>
-                            <textarea x-model="produtoSelecionado.especificacoes" rows="4" 
-                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent"></textarea>
-                        </div>
-                        
-                        <div class="flex justify-end space-x-3 pt-4">
-                            <button type="button" @click="modalEditarProduto = false" 
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Preço por m³ (R$)</label>
+                                    <input type="number" x-model="produtoSelecionado.preco" step="0.01" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Disponibilidade</label>
+                                    <select x-model="produtoSelecionado.disponibilidade"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent">
+                                        <option value="in_stock">Disponível</option>
+                                        <option value="on_demand">Sob Consulta</option>
+                                        <option value="out_of_stock">Esgotado</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                                <textarea x-model="produtoSelecionado.descricao" rows="3"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Especificações Técnicas</label>
+                                <textarea x-model="produtoSelecionado.especificacoes" rows="4"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent"></textarea>
+                            </div>
+
+                            <div class="flex justify-end space-x-3 pt-4">
+                                <button type="button" @click="modalEditarProduto = false"
                                     class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                                Cancelar
-                            </button>
-                            <button type="submit" 
+                                    Cancelar
+                                </button>
+                                <button type="submit"
                                     class="px-4 py-2 bg-wood-brown text-white rounded-lg hover:bg-wood-dark transition-colors">
-                                Atualizar Produto
-                            </button>
-                        </div>
-                    </form>
+                                    Atualizar Produto
+                                </button>
+                            </div>
+                        </form>
                 </div>
             </div>
         </div>
