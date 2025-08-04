@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Tronco Forte Admin</title>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -27,18 +28,19 @@
             }
         }
     </script>
-    
+
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body class="bg-gradient-to-br from-wood-light to-warm-beige min-h-screen flex items-center justify-center font-sans">
     <div class="max-w-md w-full mx-4">
         <!-- Logo -->
@@ -52,7 +54,7 @@
             <h1 class="text-2xl font-semibold text-gray-800">Área Administrativa</h1>
             <p class="text-gray-600 mt-2">Faça login para acessar o painel</p>
         </div>
-        
+
         <!-- Login Form -->
         <div class="bg-white rounded-xl shadow-xl p-8" x-data="{
             username: '',
@@ -90,6 +92,7 @@
                         this.error = data.message || 'Credenciais inválidas';
                     }
                 } catch (error) {
+                    console.error('Erro de conexão:', error);
                     this.error = 'Erro de conexão. Tente novamente.';
                 } finally {
                     this.loading = false;
@@ -104,50 +107,47 @@
                         <span x-text="error"></span>
                     </div>
                 </div>
-                
+
                 <!-- Username Field -->
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
                         Usuário
                     </label>
                     <div class="relative">
-                        <input 
-                            type="text" 
-                            id="username" 
+                        <input
+                            type="text"
+                            id="username"
                             x-model="username"
                             class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent transition-colors"
                             placeholder="Digite seu usuário"
-                            required
-                        >
+                            required>
                         <i data-lucide="user" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"></i>
                     </div>
                 </div>
-                
+
                 <!-- Password Field -->
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
                         Senha
                     </label>
                     <div class="relative">
-                        <input 
-                            :type="showPassword ? 'text' : 'password'" 
-                            id="password" 
+                        <input
+                            :type="showPassword ? 'text' : 'password'"
+                            id="password"
                             x-model="password"
                             class="w-full px-4 py-3 pl-12 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood-brown focus:border-transparent transition-colors"
                             placeholder="Digite sua senha"
-                            required
-                        >
+                            required>
                         <i data-lucide="lock" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             @click="showPassword = !showPassword"
-                            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        >
+                            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <i :data-lucide="showPassword ? 'eye-off' : 'eye'" class="w-5 h-5"></i>
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Remember Me -->
                 <div class="flex items-center justify-between">
                     <label class="flex items-center">
@@ -155,13 +155,12 @@
                         <span class="ml-2 text-sm text-gray-600">Lembrar-me</span>
                     </label>
                 </div>
-                
+
                 <!-- Submit Button -->
-                <button 
-                    type="submit" 
+                <button
+                    type="submit"
                     :disabled="loading"
-                    class="w-full bg-wood-brown text-white py-3 px-4 rounded-lg hover:bg-wood-dark focus:ring-2 focus:ring-wood-brown focus:ring-offset-2 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                    class="w-full bg-wood-brown text-white py-3 px-4 rounded-lg hover:bg-wood-dark focus:ring-2 focus:ring-wood-brown focus:ring-offset-2 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
                     <span x-show="!loading">Entrar</span>
                     <span x-show="loading" class="flex items-center justify-center">
                         <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -172,7 +171,7 @@
                     </span>
                 </button>
             </form>
-            
+
             <!-- Default Credentials Info -->
             <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div class="flex items-start">
@@ -185,7 +184,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Back to Site -->
         <div class="text-center mt-6">
             <a href="/" class="text-wood-brown hover:text-wood-dark font-medium">
@@ -193,15 +192,16 @@
             </a>
         </div>
     </div>
-    
+
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
-        
+
         // Re-initialize icons when Alpine updates the DOM
         document.addEventListener('alpine:updated', () => {
             lucide.createIcons();
         });
     </script>
 </body>
+
 </html>
